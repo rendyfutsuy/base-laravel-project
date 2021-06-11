@@ -1,23 +1,40 @@
+# Dependencies
+# Ignore All Dependencies Related Files
 /vendor/
 node_modules/
 npm-debug.log
 yarn-error.log
+mix-manifest.json
+composer.lock
+yarn.lock
+
+# Testing Environment
+# Ignore testing environment Setting
+# Ignore local Testing result
+phpunit.xml
+.phpunit.result.cache
+/.vagrant
 
 # Laravel 4 specific
+# Ignore Local Storage change in Laravel version 4 below
 bootstrap/compiled.php
 app/storage/
 
 # Laravel 5 & Lumen specific
+# Ignore Local Storage change in Laravel version above 5 and Lumen
 public/storage
 public/hot
 
 # Laravel 5 & Lumen specific with changed public path
+# Ignore Local Public Storage change in Laravel version above 5 and Lumen
 public_html/storage
 public_html/hot
 
+# Credential & Environment Setting
+# Ignore Any local Credential and local .env Setting
 storage/*.key
 .env
 Homestead.yaml
 Homestead.json
-/.vagrant
-.phpunit.result.cache
+
+# Others Based on Current Project
