@@ -3,10 +3,6 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use Database\Seeders\RolesSeeder;
-use Database\Seeders\ExampleSeeder;
-use Database\Seeders\OauthClientSeeder;
-use Database\Seeders\PermissionsSeeder;
 
 class StagingSeeder extends Seeder
 {
@@ -30,7 +26,7 @@ class StagingSeeder extends Seeder
         // Add those here.
 
         $this->call([
-            OauthClientSeeder::class
+            OauthClientSeeder::class,
         ]);
     }
 }

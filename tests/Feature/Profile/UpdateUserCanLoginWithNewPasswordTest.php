@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Profile;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Components\AuthCase;
 use Tests\TestCase;
 
@@ -17,7 +15,7 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
         $currentUser = $this->login('superadmin@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.profile.password'), [
             'password' => '54321',
         ]);

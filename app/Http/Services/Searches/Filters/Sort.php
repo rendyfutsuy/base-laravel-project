@@ -27,9 +27,9 @@ class Sort implements FilterContract
     {
         $sortField = request('sort_field', $this->defaultSortField);
         $sortOrder = request('sort_order', 'asc');
-        
+
         $isSortAvailable = $this->isSortFieldAvailable($sortField);
-        
+
         if ($isSortAvailable) {
             $query->orderBy($sortField, $sortOrder);
         }
@@ -54,7 +54,7 @@ class Sort implements FilterContract
             $keys = $class->getTable();
 
             foreach ($class->getFillable() as $fill) {
-                $fillable[] = $keys . '.' . $fill;
+                $fillable[] = $keys.'.'.$fill;
             }
         }
 

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Models\User;
 use App\Events\UserStored;
 use App\Events\UserUpdated;
 use Illuminate\Http\Request;
@@ -12,15 +11,14 @@ use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
 use App\Http\Services\Traits\ResultResponse;
 use App\Http\Resources\UserResourceCollection;
-use App\Http\Repositories\Contracts\UserContract;
 use App\Http\Repositories\Contracts\StaffContract;
 
 class StaffController extends Controller
 {
     use ResultResponse;
-    
+
     protected $staff;
-    
+
     public function __construct(StaffContract $staff)
     {
         $this->staff = $staff;
@@ -77,12 +75,13 @@ class StaffController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(! $this->staff->validateUserRole($this->staff->find($id))) {
+        if (! $this->staff->validateUserRole($this->staff->find($id))) {
             return $this->resultResponse('failed', 'Requested User have wrong Role', 400);
         }
 
         $staff = DB::transaction(function () use ($request, $id) {
             $this->staff->update($request->all(), $id);
+
             return $this->staff->find($id);
         });
 
@@ -100,7 +99,7 @@ class StaffController extends Controller
     public function destroy($id)
     {
         $staff = $this->staff->find($id);
-        
+
         DB::transaction(function () use ($id) {
             $this->staff->delete($id);
         });
@@ -108,7 +107,7 @@ class StaffController extends Controller
         event('user.deleted', new UserDestroyed($staff));
 
         return response()->json([
-            'message' => 'delete '. $staff->email .' success'
+            'message' => 'delete '.$staff->email.' success',
         ], 200);
     }
 }

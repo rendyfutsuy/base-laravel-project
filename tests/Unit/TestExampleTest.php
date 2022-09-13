@@ -57,9 +57,9 @@ class TestExampleTest extends TestCase
     {
         $knownDate = Carbon::parse('2021-09-09 10:00:00');
         Carbon::setTestNow($knownDate);
-        
+
         $example = TestExample::create([
-            'name' => 'Rendy'
+            'name' => 'Rendy',
         ]);
 
         $this->assertEquals('2021/09/09 10:00:00', $example->joined_at);
@@ -72,11 +72,11 @@ class TestExampleTest extends TestCase
     public function when_creating_new_example_status_and_joined_at_can_be_manually_filled()
     {
         $knownDate = Carbon::parse('2021-10-10 10:00:00');
-        
+
         $example = TestExample::create([
             'name' => 'Rendy',
             'joined_at' => $knownDate,
-            'status' => TestExample::EXPIRED
+            'status' => TestExample::EXPIRED,
         ]);
 
         $this->assertEquals('2021/10/10 10:00:00', $example->joined_at);
@@ -87,16 +87,16 @@ class TestExampleTest extends TestCase
 
     /** @test  */
     public function when_updating_example_status_automatically_status_can_be_null()
-    {       
+    {
         $example = TestExample::create([
-            'name' => 'Rendy'
+            'name' => 'Rendy',
         ]);
-        
+
         TestExample::find($example->id)->update([
             'name' => 'Rendy UPDATED',
-            'status' => null
+            'status' => null,
         ]);
-        
+
         $this->assertEquals(null, $example->fresh()->status);
 
         $example->delete();

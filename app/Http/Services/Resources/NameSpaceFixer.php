@@ -9,7 +9,7 @@ trait NameSpaceFixer
 {
     protected function getBaseDirectory($factoryName)
     {
-        return File::dirname($this->basePath .'\\'. $factoryName);
+        return File::dirname($this->basePath.'\\'.$factoryName);
     }
 
     protected function getBaseFileName($factoryName)
@@ -19,10 +19,10 @@ trait NameSpaceFixer
 
     protected function getNameSpacePath($factoryName)
     {
-        $chunks =  explode("\\", $factoryName);
+        $chunks = explode('\\', $factoryName);
         $fileName = collect($chunks)->last();
 
-        return Str::ucfirst(str_replace('\\'. $fileName, '', $factoryName));
+        return Str::ucfirst(str_replace('\\'.$fileName, '', $factoryName));
     }
 
     protected function getNameSpace($factoryName)
@@ -30,4 +30,3 @@ trait NameSpaceFixer
         return str_replace('/', '\\', $factoryName);
     }
 }
-

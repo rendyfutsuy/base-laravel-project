@@ -16,7 +16,7 @@ class ExampleMockMailTest extends TestCase
     | Mocking Mail on Feature Test
     |--------------------------------------------------------------------------
     |
-    | skip Mail class so test can check the code after Mail hit, 
+    | skip Mail class so test can check the code after Mail hit,
     | we can uses mock to skip this steps hopefully make the test run more efficiently.
     |
     */
@@ -29,9 +29,9 @@ class ExampleMockMailTest extends TestCase
 
         $this->postJson(route('api.example.repository.store'), [
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ])->assertOk();
-        
+
         Mail::assertSent(SendExampleCreationNotification::class);
 
         $example = TestExample::where('name', 'Rendy Anggara')->first();
@@ -47,14 +47,14 @@ class ExampleMockMailTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
-        
+
         $this->putJson(route('api.example.repository.update', $example->id), [
             'name' => 'Rendy Anggara UPDATED',
-            'status' => 1
+            'status' => 1,
         ])->assertOk();
-        
+
         Mail::assertSent(SendExampleChangeNotification::class);
 
         $example = TestExample::where('name', 'Rendy Anggara UPDATED')->first();
@@ -70,14 +70,14 @@ class ExampleMockMailTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
 
         $this->deleteJson(route('api.example.repository.delete', $example->id))
             ->assertOk();
 
         Mail::assertSent(SendExampleDeleteNotification::class);
-        
+
         $example = TestExample::where('name', 'Rendy Anggara')->first();
         $this->assertNull($example);
     }

@@ -28,9 +28,9 @@ class ExampleRepositoryTest extends TestCase
                 '*' => [
                     'name',
                     'status',
-                    'is_example', 
-                ]
-            ]
+                    'is_example',
+                ],
+            ],
         ]);
 
         $this->assertEquals(7, count($response->json()['data']));
@@ -44,7 +44,7 @@ class ExampleRepositoryTest extends TestCase
 
         $this->postJson(route('api.example.repository.store'), [
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ])->assertOk();
 
         $example = TestExample::where('name', 'Rendy Anggara')->first();
@@ -60,14 +60,14 @@ class ExampleRepositoryTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
-        
+
         $this->putJson(route('api.example.repository.update', $example->id), [
             'name' => 'Rendy Anggara UPDATED',
-            'status' => 99
+            'status' => 99,
         ])->assertOk();
-        
+
         $example = TestExample::where('name', 'Rendy Anggara UPDATED')->first();
         $this->assertEquals('Rendy Anggara UPDATED', $example->name);
         $this->assertEquals(99, $example->status);
@@ -82,12 +82,12 @@ class ExampleRepositoryTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
 
         $this->deleteJson(route('api.example.repository.delete', $example->id))
             ->assertOk();
-        
+
         $example = TestExample::where('name', 'Rendy Anggara')->first();
         $this->assertNull($example);
     }

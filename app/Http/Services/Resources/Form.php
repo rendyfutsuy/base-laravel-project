@@ -12,7 +12,7 @@ abstract class Form
     /**
      * Get value from parameters using dot notation
      *
-     * @param  string $key
+     * @param  string  $key
      * @param  mixed  $default
      * @return mixed
      */
@@ -24,11 +24,10 @@ abstract class Form
     /**
      * check if key exists or not
      *
-     * @param  string $key
+     * @param  string  $key
      */
     protected function hasKey($key): bool
     {
         return array_key_exists($key, $this->parameters);
     }
 }
-

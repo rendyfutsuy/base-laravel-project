@@ -6,18 +6,17 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\UserResource;
-use App\Http\Repositories\Contracts\UserContract;
 use App\Http\Repositories\Contracts\SuperadminContract;
 
 class ProfileController extends Controller
 {
     protected $user;
-    
+
     public function __construct(SuperadminContract $user)
     {
         $this->user = $user;
     }
-    
+
     /**
      * @return \Illuminate\Http\Response
      */

@@ -4,7 +4,6 @@ namespace App\Http\Repositories;
 
 use App\Models\TestExample;
 use Illuminate\Database\Eloquent\Collection;
-use App\Http\Repositories\BaseRepository;
 use App\Http\Repositories\Contracts\ExampleContract;
 
 class ExampleRepository extends BaseRepository implements ExampleContract
@@ -21,6 +20,6 @@ class ExampleRepository extends BaseRepository implements ExampleContract
 
     public function getActivated(): Collection
     {
-        return $this->model->where('status', TestExample::ACTIVATED)->get(); 
+        return $this->model->where('status', TestExample::ACTIVATED)->get();
     }
 }

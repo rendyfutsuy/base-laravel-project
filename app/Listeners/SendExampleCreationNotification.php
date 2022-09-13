@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\ExampleCreated;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\SendExampleCreationNotification as MailSendExampleCreationNotification;
 
 class SendExampleCreationNotification

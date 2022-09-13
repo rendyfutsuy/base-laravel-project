@@ -31,9 +31,9 @@ abstract class HttpSearch extends Form
     /**
      * Undocumented function
      *
-     * @param  Pipeline $pipeline
+     * @param  Pipeline  $pipeline
      * @param  Laravel|null  $laravel
-     * @param  Request $request
+     * @param  Request  $request
      * @return void
      */
     public function __construct(Pipeline $pipeline, Request $request, Laravel $laravel = null)
@@ -53,12 +53,12 @@ abstract class HttpSearch extends Form
     {
         if (! empty($params)) {
             $this->parameters = $params['0'];
-        } elseif (! empty($this->request )) {
+        } elseif (! empty($this->request)) {
             $this->parameters = $this->request->all();
         }
 
         if (! method_exists($this, 'passable')) {
-            throw new RuntimeException("passable method not exists.");
+            throw new RuntimeException('passable method not exists.');
         }
 
         $result = $this->pipeline->send($this->{'passable'}(...$params))
@@ -79,7 +79,7 @@ abstract class HttpSearch extends Form
      */
     protected function thenReturn($result)
     {
-        return;
+
     }
 
     protected function parsedFilters(): array
@@ -91,7 +91,7 @@ abstract class HttpSearch extends Form
             }
 
             // Kalau kelas filter tidak ada kita serahkan resolusinya ke Laravel.
-            if (!class_exists($filter)) {
+            if (! class_exists($filter)) {
                 return $filter;
             }
 

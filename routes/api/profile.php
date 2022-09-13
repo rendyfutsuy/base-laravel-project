@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::prefix('profile')->middleware('auth:api')->group(function() {
+Route::prefix('profile')->middleware('auth:api')->group(function () {
     Route::get('/', [ProfileController::class, 'profile'])
         ->name('api.profile.index');
 

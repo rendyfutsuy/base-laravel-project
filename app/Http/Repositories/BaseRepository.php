@@ -14,7 +14,7 @@ class BaseRepository implements BaseRepositoryContract
     protected $model;
 
     /**
-     * @param Model $model
+     * @param  Model  $model
      */
     public function __construct(Model $model)
     {
@@ -31,7 +31,6 @@ class BaseRepository implements BaseRepositoryContract
 
     /**
      * @param $id
-     *
      * @return Model
      */
     public function find($id): Model
@@ -40,8 +39,7 @@ class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * @param array $criteria
-     *
+     * @param  array  $criteria
      * @return Model
      */
     public function findByCriteria(array $criteria): ?Model
@@ -52,8 +50,7 @@ class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * @param array $criteria
-     *
+     * @param  array  $criteria
      * @return Collection
      */
     public function getByCriteria(array $criteria): Collection
@@ -64,8 +61,7 @@ class BaseRepository implements BaseRepositoryContract
     }
 
     /**
-     * @param array $attributes
-     *
+     * @param  array  $attributes
      * @return Model
      */
     public function store(array $attributes): Model
@@ -75,8 +71,7 @@ class BaseRepository implements BaseRepositoryContract
 
     /**
      * @param $id
-     * @param array $attributes
-     *
+     * @param  array  $attributes
      * @return void
      */
     public function update(array $attributes, $id)
@@ -88,7 +83,6 @@ class BaseRepository implements BaseRepositoryContract
 
     /**
      * @param $id
-     *
      * @return void
      */
     public function delete($id)
@@ -97,5 +91,4 @@ class BaseRepository implements BaseRepositoryContract
             ->where('id', $id)
             ->delete();
     }
-
 }

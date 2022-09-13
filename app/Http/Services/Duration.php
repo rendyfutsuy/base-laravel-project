@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Services;
 
 use Carbon\Carbon;
@@ -6,6 +7,7 @@ use Carbon\Carbon;
 class Duration
 {
     protected $start;
+
     protected $end;
 
     public function __construct(Carbon $start, Carbon $end)
@@ -16,7 +18,7 @@ class Duration
 
     public function inTime(): string
     {
-        return gmdate("H:i:s", $this->inSecond());
+        return gmdate('H:i:s', $this->inSecond());
     }
 
     public function inSecond(): int

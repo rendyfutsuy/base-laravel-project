@@ -1,11 +1,10 @@
 <?php
 
 use Illuminate\Support\Str;
-use Modules\Auth\Models\User;
 
 if (! function_exists('base64url_encode')) {
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return string
      */
     function base64url_encode($data)
@@ -16,19 +15,19 @@ if (! function_exists('base64url_encode')) {
 
 if (! function_exists('base64url_decode')) {
     /**
-     * @param mixed $data
+     * @param  mixed  $data
      * @return string
      */
     function base64url_decode($data)
     {
-        return base64_decode(strtr($data, '-_', '+/') . str_repeat('=', 3 - (3 + strlen($data)) % 4));
+        return base64_decode(strtr($data, '-_', '+/').str_repeat('=', 3 - (3 + strlen($data)) % 4));
     }
 }
 
 if (! function_exists('round_up')) {
     /**
-     * @param float $value
-     * @param int $precision
+     * @param  float  $value
+     * @param  int  $precision
      * @return float
      */
     function round_up($value, $precision = 2)
@@ -43,9 +42,10 @@ if (! function_exists('random_str')) {
         $keyspace = $keyspace ?: '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
         $pieces = [];
         $max = mb_strlen($keyspace, '8bit') - 1;
-        for ($i = 0; $i < $length; ++$i) {
+        for ($i = 0; $i < $length; $i++) {
             $pieces[] = $keyspace[random_int(0, $max)];
         }
+
         return implode('', $pieces);
     }
 }
@@ -74,14 +74,15 @@ if (! function_exists('number_abbr')) {
             $n_format = number_format($number / 1000000000000, $precision, ',', '.');
             $suffix = 't';
         }
-        
+
         // Remove unnecessary zeroes after decimal. "1.0" -> "1"; "1.00" -> "1"
         // Intentionally does not affect partials, eg "1.50" -> "1.50"
         if ($precision > 0) {
-            $dotZero = ',' . str_repeat('0', $precision);
+            $dotZero = ','.str_repeat('0', $precision);
             $n_format = str_replace($dotZero, '', $n_format);
         }
-        return $n_format . $suffix;
+
+        return $n_format.$suffix;
     }
 }
 
@@ -95,7 +96,7 @@ if (! function_exists('price_abbr')) {
 if (! function_exists('price_formatted')) {
     function price_formatted(int $number, string $currencyCode = 'Rp.'): string
     {
-        return $currencyCode . number_format($number, 0, ',', '.');
+        return $currencyCode.number_format($number, 0, ',', '.');
     }
 }
 
@@ -110,29 +111,32 @@ if (! function_exists('phone')) {
 
         $phones = [];
         if (substr($value, 0, 2) == '08') {
-            $phones['international'] = '0' . substr($value, 1, strlen($value));
-            $phones['local'] = $countryCode . substr($value, 1, strlen($value));
+            $phones['international'] = '0'.substr($value, 1, strlen($value));
+            $phones['local'] = $countryCode.substr($value, 1, strlen($value));
             $phones['without_code'] = substr($value, 1, strlen($value));
+
             return $phones;
         }
 
         if (substr($value, 0, 2) == $countryCode) {
-            $phones['international'] = '0' . substr($value, 2, strlen($value));
-            $phones['local'] = $countryCode . substr($value, 2, strlen($value));
+            $phones['international'] = '0'.substr($value, 2, strlen($value));
+            $phones['local'] = $countryCode.substr($value, 2, strlen($value));
             $phones['without_code'] = substr($value, 2, strlen($value));
+
             return $phones;
         }
 
         if (substr($value, 0, 3) == '+'.$countryCode) {
-            $phones['international'] = '0' . substr($value, 3, strlen($value));
-            $phones['local'] = $countryCode . substr($value, 3, strlen($value));
+            $phones['international'] = '0'.substr($value, 3, strlen($value));
+            $phones['local'] = $countryCode.substr($value, 3, strlen($value));
             $phones['without_code'] = substr($value, 3, strlen($value));
+
             return $phones;
         }
 
         return [
-            'international' => "0". $value,
-            'local' => $countryCode . $value,
+            'international' => '0'.$value,
+            'local' => $countryCode.$value,
             'without_code' => $value,
         ];
     }
@@ -143,18 +147,19 @@ if (! function_exists('mask_email')) {
     {
         $chunks = explode('@', $email);
         $strLength1 = strlen($chunks['0']);
-        $firstChar1 = substr($chunks['0'], 0, (int)floor($strLength1 * 0.3));
+        $firstChar1 = substr($chunks['0'], 0, (int) floor($strLength1 * 0.3));
         $stars1 = str_repeat('*', $strLength1 - 1);
 
         if (count($chunks) == 1) {
-            return $firstChar1 . $stars1 . substr($chunks['0'], -2);
+            return $firstChar1.$stars1.substr($chunks['0'], -2);
         }
 
         $strLength2 = strlen($chunks['1']);
         $firstChar2 = substr($chunks['1'], 0, -1 * ($strLength2 - 3));
         $stars2 = str_repeat('*', $strLength2 - 3);
 
-        $email = $firstChar1 . $stars1. '@'. $firstChar2 . $stars2;
+        $email = $firstChar1.$stars1.'@'.$firstChar2.$stars2;
+
         return $email;
     }
 }
@@ -162,7 +167,7 @@ if (! function_exists('mask_email')) {
 if (! function_exists('normalize_words')) {
     /**
      * @param  string  $value
-     * @return integer
+     * @return int
      */
     function normalize_words($value)
     {
@@ -180,13 +185,14 @@ if (! function_exists('normalize_words')) {
 if (! function_exists('word_counter')) {
     /**
      * @param  string  $value
-     * @return integer
+     * @return int
      */
     function word_counter($value)
     {
         $words = normalize_words($value);
         $words = Str::of($words)->replace('_', ' ');
         $words = Str::of($words)->replace('-', ' ');
+
         return count(explode(' ', $words));
     }
 }

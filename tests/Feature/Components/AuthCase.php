@@ -3,7 +3,6 @@
 namespace Tests\Feature\Components;
 
 use App\Models\User;
-use Illuminate\Support\Facades\Http;
 
 trait AuthCase
 {
@@ -16,7 +15,7 @@ trait AuthCase
                 'token' => null,
             ];
         }
-        
+
         return [
             'user' => $user,
             'token' => $user->createToken(config('passport.token'))->accessToken,

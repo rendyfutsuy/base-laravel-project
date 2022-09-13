@@ -17,7 +17,7 @@ class Example extends JsonResource
         return [
             'name' => $this->name,
             'status' => $this->status,
-            'is_example' => true, 
+            'is_example' => true,
         ];
     }
 }

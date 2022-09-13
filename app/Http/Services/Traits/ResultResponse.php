@@ -4,7 +4,6 @@ namespace App\Http\Services\Traits;
 
 trait ResultResponse
 {
-
     public function resultResponse($status, $message, $code)
     {
         return response()->json(['status' => $status, 'message' => $message], $code);

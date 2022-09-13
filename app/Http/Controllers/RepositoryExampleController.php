@@ -19,11 +19,11 @@ class RepositoryExampleController extends Controller
     {
         $this->repository = $repository;
     }
-    
+
     public function all()
     {
         $examples = $this->repository->all();
-        
+
         return new ExampleCollection($examples);
     }
 
@@ -38,7 +38,7 @@ class RepositoryExampleController extends Controller
 
         return response()->json([
             'message' => 'success',
-            'example' => $example
+            'example' => $example,
         ]);
     }
 

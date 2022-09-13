@@ -19,7 +19,7 @@ class Example3rdParty
                 'body' => $body,
             ];
         }
-        
+
         return [
             'status' => 200,
             'message' => 'success',
@@ -40,7 +40,7 @@ class Example3rdParty
                 'body' => $body,
             ];
         }
-        
+
         return [
             'status' => 201,
             'message' => 'success',

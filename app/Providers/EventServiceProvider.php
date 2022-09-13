@@ -23,23 +23,23 @@ class EventServiceProvider extends ServiceProvider
         ],
 
         'example.created' => [
-            SendExampleCreationNotification::class
+            SendExampleCreationNotification::class,
         ],
 
         'example.updated' => [
-            SendExampleUpdateNotification::class
+            SendExampleUpdateNotification::class,
         ],
 
         'example.deleted' => [
-            SendExampleDeleteNotification::class
+            SendExampleDeleteNotification::class,
         ],
 
         'permission.stored' => [],
-        
+
         'permission.resynchronized' => [],
 
         'role.stored' => [],
-        
+
         'role.resynchronized' => [],
 
         'user.created' => [],

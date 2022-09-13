@@ -12,10 +12,10 @@ trait MockExample
             config('example.3rd_party_url') => Http::response([
                 'status' => [
                     'code' => '200',
-                    'message' => 'Data Fetched'
+                    'message' => 'Data Fetched',
                 ],
                 'meta' => [],
-                'data' => []
+                'data' => [],
             ], 200),
         ]);
     }
@@ -26,7 +26,7 @@ trait MockExample
             config('example.3rd_party_url') => Http::response([
                 'status' => [
                     'code' => '400',
-                    'message' => 'FAILED TO LOAD DATA'
+                    'message' => 'FAILED TO LOAD DATA',
                 ],
             ], 400),
         ]);
@@ -38,7 +38,7 @@ trait MockExample
             config('example.3rd_party_url') => Http::response([
                 'status' => [
                     'code' => '201',
-                    'message' => 'DATA VALIDATED'
+                    'message' => 'DATA VALIDATED',
                 ],
                 'name' => 'Rendy',
                 'level' => 'Captain',
@@ -53,7 +53,7 @@ trait MockExample
             config('example.3rd_party_url') => Http::response([
                 'status' => [
                     'code' => '500',
-                    'message' => 'Something went wrong!'
+                    'message' => 'Something went wrong!',
                 ],
             ], 500),
         ]);

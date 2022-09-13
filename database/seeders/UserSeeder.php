@@ -34,13 +34,13 @@ class UserSeeder extends Seeder
         $role = Role::findByName('SUPER_ADMIN', 'api');
         $superadmin->assignRole($role);
 
-        for ($i=0; $i < 20; $i++) { 
+        for ($i = 0; $i < 20; $i++) {
             $admin = User::create([
                 'email' => 'admin.dummy.'.$i.'@mailinator.com',
                 'password' => Hash::make('12345'),
                 'name' => 'Rendy Anggara',
             ]);
-    
+
             $role = Role::findByName('SUPER_ADMIN', 'api');
             $admin->assignRole($role);
         }
@@ -54,13 +54,13 @@ class UserSeeder extends Seeder
         $role = Role::findByName('STAFF', 'api');
         $staff->assignRole($role);
 
-        for ($i=0; $i < 20; $i++) { 
+        for ($i = 0; $i < 20; $i++) {
             $staff = User::create([
                 'email' => 'staff.dummy.'.$i.'@mailinator.com',
                 'password' => Hash::make('12345'),
                 'name' => 'Rendy Anggara',
             ]);
-    
+
             $role = Role::findByName('STAFF', 'api');
             $staff->assignRole($role);
         }
@@ -81,13 +81,13 @@ class UserSeeder extends Seeder
         $role = Role::findByName('NORMAL_USER', 'api');
         $user->assignRole($role);
 
-        for ($i=0; $i < 20; $i++) { 
+        for ($i = 0; $i < 20; $i++) {
             $user = User::create([
                 'email' => 'user.dummy.'.$i.'@mailinator.com',
                 'password' => Hash::make('12345'),
                 'name' => 'Rendy Anggara',
             ]);
-    
+
             $role = Role::findByName('NORMAL_USER', 'api');
             $user->assignRole($role);
         }
@@ -98,7 +98,7 @@ class UserSeeder extends Seeder
             'name' => 'Rendy Anggara',
         ]);
 
-        $role = Role::findByName('UNVALIDATED_USER', 'api');        
+        $role = Role::findByName('UNVALIDATED_USER', 'api');
         $unvalidatedUser->assignRole($role);
     }
 }

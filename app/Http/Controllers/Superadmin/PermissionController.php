@@ -17,7 +17,7 @@ use App\Http\Repositories\Contracts\PermissionContract;
 class PermissionController extends Controller
 {
     protected $permission;
-    
+
     public function __construct(PermissionContract $permission)
     {
         $this->permission = $permission;
@@ -43,15 +43,15 @@ class PermissionController extends Controller
      */
     public function store(Request $request)
     {
-        $permission = DB::transaction(function () use ($request) { 
+        $permission = DB::transaction(function () use ($request) {
             $permission = $this->permission->store($request->all());
 
             event('permission.stored', new PermissionsStored($permission));
-            
+
             return $permission;
         });
 
-        return (new PermissionResource($permission))->response()->setStatusCode(200);;
+        return (new PermissionResource($permission))->response()->setStatusCode(200);
     }
 
     /**
@@ -64,9 +64,9 @@ class PermissionController extends Controller
     {
         $permission = $this->permission->find($id);
 
-        return (new PermissionResource($permission))->response()->setStatusCode(200);;
+        return (new PermissionResource($permission))->response()->setStatusCode(200);
     }
-    
+
     /**
      * sync multiple permission to role.
      *
@@ -76,10 +76,9 @@ class PermissionController extends Controller
     public function resync(PermissionsSynchro $request, Permission $permission)
     {
         return DB::transaction(function () use ($permission, $request) {
-            
             $permission = $this->permission->resync($request->roles, $permission);
 
-            event('permission.resynchronized', new PermissionSynced($permission)); 
+            event('permission.resynchronized', new PermissionSynced($permission));
 
             return new PermissionSyncedResource($permission);
         });

@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Profile;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
 use Tests\Feature\Components\AuthCase;
 use Tests\TestCase;
 
@@ -17,12 +15,12 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('superadmin@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.profile.update'), [
             'name' => 'My Name',
             'email' => 'superadmin@mailinator.com',
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -32,7 +30,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('superadmin@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.profile.password'), [
             'password' => '12345',
         ]);
@@ -46,7 +44,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('superadmin@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.profile.index'));
 
         $response->assertOk();
@@ -58,12 +56,12 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('user@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.profile.update'), [
             'name' => 'My Name',
             'email' => 'user@mailinator.com',
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -73,7 +71,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('user@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.profile.password'), [
             'password' => '12345',
         ]);
@@ -87,7 +85,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('user@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.profile.index'));
 
         $response->assertOk();
@@ -99,12 +97,12 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('staff@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.profile.update'), [
             'name' => 'My Name',
             'email' => 'staff@mailinator.com',
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -114,7 +112,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('staff@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.profile.password'), [
             'password' => '12345',
         ]);
@@ -128,7 +126,7 @@ class ProfileUpdateTest extends TestCase
         $currentUser = $this->login('staff@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.profile.index'));
 
         $response->assertOk();

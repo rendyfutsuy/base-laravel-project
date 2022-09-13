@@ -34,15 +34,15 @@ trait BaseFoundation
 
     /**
      * change class to string to Builder Object
-     * 
-     * @param  class-string $currentClass
+     *
+     * @param  class-string  $currentClass
      * @return mixed
      */
     protected function resolveClassIdentification($currentClass)
     {
         $constructor = (new \ReflectionClass($currentClass))->getConstructor();
 
-        if (!$constructor) {
+        if (! $constructor) {
             return $currentClass;
         }
 
@@ -66,5 +66,4 @@ trait BaseFoundation
 
         return $this->laravel;
     }
-
 }

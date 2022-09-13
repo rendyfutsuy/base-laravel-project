@@ -1,4 +1,5 @@
 <?php
+
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Superadmin\RoleController;
 use App\Http\Controllers\Superadmin\PermissionController;
@@ -11,7 +12,7 @@ use App\Http\Controllers\Superadmin\PermissionController;
 */
 
 Route::middleware(['auth:api'])->group(function () {
-    Route::prefix('roles')->group(function() {
+    Route::prefix('roles')->group(function () {
         Route::get('/', [RoleController::class, 'index'])
             ->middleware('permission:api.role.index')
             ->name('api.role.index');
@@ -20,7 +21,7 @@ Route::middleware(['auth:api'])->group(function () {
             ->name('api.role.show');
         Route::post('/', [RoleController::class, 'store'])
             ->middleware('permission:api.role.store')
-            ->name('api.role.store');        
+            ->name('api.role.store');
         Route::post('sync/{role}', [RoleController::class, 'sync'])
             ->middleware('permission:api.role.permission.sync')
             ->name('api.role.permission.sync');
@@ -30,7 +31,7 @@ Route::middleware(['auth:api'])->group(function () {
             ->name('api.role.user.resync');
     });
 
-    Route::prefix('permissions')->group(function() {
+    Route::prefix('permissions')->group(function () {
         Route::get('/', [PermissionController::class, 'index'])
             ->middleware('permission:api.permission.index')
             ->name('api.permission.index');

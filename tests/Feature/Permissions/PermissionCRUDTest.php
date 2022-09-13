@@ -15,14 +15,14 @@ class PermissionCRUDTest extends TestCase
     public function superadmin_can_store_new_permission()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
             'roles' => [Role::find(1)->id],
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -30,9 +30,9 @@ class PermissionCRUDTest extends TestCase
     public function staff_can_not_store_new_permission()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
             'roles' => [Role::find(1)->id],
@@ -45,25 +45,25 @@ class PermissionCRUDTest extends TestCase
     public function normal_permission_can_not_store_new_permission()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
             'roles' => [Role::find(1)->id],
         ]);
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_store_new_permission()
-    {        
+    {
         $response = $this->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
             'roles' => [Role::find(1)->id],
         ]);
-        
+
         $response->assertUnauthorized();
     }
 
@@ -71,11 +71,11 @@ class PermissionCRUDTest extends TestCase
     public function superadmin_can_see_index()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.permission.index'));
-        
+
         $response->assertOk();
     }
 
@@ -83,9 +83,9 @@ class PermissionCRUDTest extends TestCase
     public function staff_can_not_see_index()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.permission.index'));
 
         $response->assertForbidden();
@@ -95,19 +95,19 @@ class PermissionCRUDTest extends TestCase
     public function normal_permission_can_not_see_index()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.permission.index'));
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_see_index()
-    {        
+    {
         $response = $this->getJson(route('api.permission.index'));
-        
+
         $response->assertUnauthorized();
     }
 
@@ -117,13 +117,13 @@ class PermissionCRUDTest extends TestCase
         $currentUser = $this->login('superadmin@mailinator.com');
         $permission = Permission::find(15);
         $roles = $permission->roles->pluck('id')->toArray();
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', $permission->id), [
             'roles' => $roles,
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -132,25 +132,25 @@ class PermissionCRUDTest extends TestCase
     {
         $currentUser = $this->login('user.1@mailinator.com');
         $permission = Permission::find(1);
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', $permission->id), [
-            'roles' => [1,2,3],
+            'roles' => [1, 2, 3],
         ]);
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_resync_permission()
-    {        
+    {
         $permission = Permission::find(1);
-        
+
         $response = $this->postJson(route('api.permission.resync', $permission->id), [
-            'roles' => [1,2,3],
+            'roles' => [1, 2, 3],
         ]);
-        
+
         $response->assertUnauthorized();
     }
 
@@ -159,11 +159,11 @@ class PermissionCRUDTest extends TestCase
     {
         $currentUser = $this->login('staff@mailinator.com');
         $permission = Permission::find(1);
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', $permission->id), [
-            'roles' => [1,2,3],
+            'roles' => [1, 2, 3],
         ]);
 
         $response->assertForbidden();

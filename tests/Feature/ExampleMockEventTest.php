@@ -13,7 +13,7 @@ class ExampleMockEventTest extends TestCase
     | Mocking Event on Feature Test
     |--------------------------------------------------------------------------
     |
-    | skip Event class so test can check the code after event hit, 
+    | skip Event class so test can check the code after event hit,
     | Because Event Class usually uses for asyncronous flow like queue, mail, push notification etc.
     | we can uses mock to skip those steps hopefully make the test run more efficiently.
     |
@@ -27,9 +27,9 @@ class ExampleMockEventTest extends TestCase
 
         $this->postJson(route('api.example.repository.store'), [
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ])->assertOk();
-        
+
         Event::assertDispatched('example.created');
 
         $example = TestExample::where('name', 'Rendy Anggara')->first();
@@ -45,14 +45,14 @@ class ExampleMockEventTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
-        
+
         $this->putJson(route('api.example.repository.update', $example->id), [
             'name' => 'Rendy Anggara UPDATED',
-            'status' => 1
+            'status' => 1,
         ])->assertOk();
-        
+
         Event::assertDispatched('example.updated');
 
         $example = TestExample::where('name', 'Rendy Anggara UPDATED')->first();
@@ -68,14 +68,14 @@ class ExampleMockEventTest extends TestCase
 
         $example = TestExample::create([
             'name' => 'Rendy Anggara',
-            'status' => 1
+            'status' => 1,
         ]);
 
         $this->deleteJson(route('api.example.repository.delete', $example->id))
             ->assertOk();
 
         Event::assertDispatched('example.deleted');
-        
+
         $example = TestExample::where('name', 'Rendy Anggara')->first();
         $this->assertNull($example);
     }

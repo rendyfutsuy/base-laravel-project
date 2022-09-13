@@ -13,7 +13,7 @@ class ExampleController extends Controller
     {
         $factory = app()->make(ExampleSearch::class);
         $examples = $factory->apply()->paginate(10);
-        
+
         return new ExampleCollection($examples);
     }
 
@@ -21,7 +21,7 @@ class ExampleController extends Controller
     {
         $example = new Example3rdParty();
         $response = $example->fetch();
-        
+
         return response()->json($response['body'], $response['status']);
     }
 
@@ -29,7 +29,7 @@ class ExampleController extends Controller
     {
         $example = new Example3rdParty();
         $response = $example->store($request->all());
-        
+
         return response()->json($response['body'], $response['status']);
     }
 }

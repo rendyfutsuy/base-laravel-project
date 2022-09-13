@@ -21,7 +21,7 @@ class OauthClientSeeder extends Seeder
             [
                 'name' => 'Personal Access Client',
                 'secret' => 'oxXhAUwFLm9q7a6V4iDOe1IfSHoFwWwW5uwlLSt2',
-                'provider' => NULL,
+                'provider' => null,
                 'redirect' => 'http://localhost',
                 'personal_access_client' => 1,
                 'password_client' => 0,

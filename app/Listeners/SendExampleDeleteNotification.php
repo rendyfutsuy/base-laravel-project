@@ -4,8 +4,6 @@ namespace App\Listeners;
 
 use App\Events\ExampleDeleted;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use App\Mail\SendExampleDeleteNotification as MailSendExampleDeleteNotification;
 
 class SendExampleDeleteNotification

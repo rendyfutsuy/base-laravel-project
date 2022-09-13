@@ -31,7 +31,7 @@ class PermissionsSynchro extends FormRequest
             'roles.*' => 'required|numeric',
         ];
     }
-  
+
     protected function failedValidation(Validator $validator)
     {
         $response = new JsonResponse([

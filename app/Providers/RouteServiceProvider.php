@@ -12,7 +12,7 @@ use Illuminate\Foundation\Support\Providers\RouteServiceProvider as ServiceProvi
 class RouteServiceProvider extends ServiceProvider
 {
     use RoutingRegistration;
-    
+
     /**
      * The path to the "home" route for your application.
      *

@@ -24,7 +24,7 @@ class GmapTest extends TestCase
     {
         config('app.gmap_key', null);
         $gmap = new Gmap();
-        $location = $gmap->find("-6.8998024,107.5215078");
+        $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals($location['status'], 'fail');
 
@@ -37,7 +37,7 @@ class GmapTest extends TestCase
         $this->mockLocation();
 
         $gmap = new Gmap();
-        $location = $gmap->find("-6.8998024,107.5215078");
+        $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals(
             $location,
@@ -61,20 +61,20 @@ class GmapTest extends TestCase
         Config::set('app.gmap_key', null);
 
         $gmap = new Gmap();
-        $location = $gmap->find("-6.8998024,107.5215078");
+        $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals('fail', $location['status']);
 
         Config::set('app.gmap_key', $previousKey);
     }
-    
+
     /** @test */
     public function if_coordinate_not_valid_gmap_will_fail()
     {
         $this->mockLocationToFail();
 
         $gmap = new Gmap();
-        $location = $gmap->find("-6.8998024");
+        $location = $gmap->find('-6.8998024');
 
         $this->assertEquals('fail', $location['status']);
     }
@@ -87,8 +87,8 @@ class GmapTest extends TestCase
                 'results' => [
                     [
                         'formatted_address' => 'Jalan Mutiara, Sukamenak, Margahayu, Bandung, West Java 40239, Indonesia',
-                    ]
-                ]
+                    ],
+                ],
             ]);
         });
     }
@@ -99,7 +99,7 @@ class GmapTest extends TestCase
             // Stub a JSON response for Gmap endpoints...
             return Http::response([
                 'results' => [],
-                'error_message' => "Invalid Coordinate"
+                'error_message' => 'Invalid Coordinate',
             ]);
         });
     }

@@ -3,36 +3,36 @@
 namespace App\Location;
 
 use Illuminate\Support\Facades\Http;
+
 class Gmap
 {
     /**
      * find Location based on latitude and longitude given by coordinate
-     * 
+     *
      * @param  ?string  $coordinate
-     * 
      * @return string
      */
     public function find($coordinate = null)
     {
         $key = config('app.gmap_key');
-        
+
         if (! $key) {
             return [
                 'status' => 'fail',
-                'message' => "Google Map Key is Null",
+                'message' => 'Google Map Key is Null',
             ];
         }
 
         if (! $coordinate) {
             return [
                 'status' => 'fail',
-                'message' => "Coordinate is null",
+                'message' => 'Coordinate is null',
             ];
         }
 
         $address = Http::get('https://maps.googleapis.com/maps/api/geocode/json', [
-            "latlng" => $coordinate,
-            "key" => $key,
+            'latlng' => $coordinate,
+            'key' => $key,
         ]);
 
         $res = json_decode($address->getBody(), true);

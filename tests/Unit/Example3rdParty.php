@@ -36,7 +36,7 @@ class Example3rdParty extends TestCase
         $this->mockPostApi();
         $service = new Service();
         $response = $service->store([
-            'name' => 'rendy'
+            'name' => 'rendy',
         ]);
 
         $this->assertEquals(200, $response['status']);
@@ -48,7 +48,7 @@ class Example3rdParty extends TestCase
         $this->mockFetchApiFail();
         $service = new Service();
         $response = $service->fetch();
-        
+
         $this->assertEquals(400, $response['status']);
     }
 
@@ -58,9 +58,9 @@ class Example3rdParty extends TestCase
         $this->mockPostApiFail();
         $service = new Service();
         $response = $service->store([
-            'name' => 'rendy'
+            'name' => 'rendy',
         ]);
-        
+
         $this->assertEquals(400, $response['status']);
     }
 }

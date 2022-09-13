@@ -19,7 +19,7 @@ use App\Http\Repositories\Contracts\RoleContract;
 class RoleController extends Controller
 {
     protected $role;
-    
+
     public function __construct(RoleContract $role)
     {
         $this->role = $role;
@@ -45,11 +45,11 @@ class RoleController extends Controller
      */
     public function store(Request $request)
     {
-        $role = DB::transaction(function () use ($request) { 
+        $role = DB::transaction(function () use ($request) {
             $role = $this->role->store($request->all());
 
             event('role.stored', new RolesStored($role));
-            
+
             return $role;
         });
 
@@ -80,7 +80,7 @@ class RoleController extends Controller
         return DB::transaction(function () use ($role, $request) {
             $role = $this->role->sync($request->permissions, $role);
 
-            event('role.resynchronized', new RoleSynchronized($role)); 
+            event('role.resynchronized', new RoleSynchronized($role));
 
             return new RoleSynchResource($role);
         });

@@ -16,15 +16,15 @@ class UserCRUDTest extends TestCase
     public function superadmin_can_store_new_user()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.user.store'), [
             'name' => 'My Name',
-            'email' => 'my.name.'. random_str(10).'@mailinator.com',
+            'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ]);
-                
+
         $response->assertOk();
     }
 
@@ -32,12 +32,12 @@ class UserCRUDTest extends TestCase
     public function staff_can_store_new_user()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.user.store'), [
             'name' => 'My Name',
-            'email' => 'my.name.'. random_str(10).'@mailinator.com',
+            'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ]);
 
@@ -48,27 +48,27 @@ class UserCRUDTest extends TestCase
     public function normal_user_can_not_store_new_user()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.user.store'), [
             'name' => 'My Name',
-            'email' => 'my.name.'. Carbon::now()->format('hms').'@mailinator.com',
+            'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
         ]);
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_store_new_user()
-    {        
+    {
         $response = $this->postJson(route('api.user.store'), [
             'name' => 'My Name',
-            'email' => 'my.name.'. Carbon::now()->format('hms').'@mailinator.com',
+            'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
         ]);
-        
+
         $response->assertUnauthorized();
     }
 
@@ -81,15 +81,15 @@ class UserCRUDTest extends TestCase
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
         ->orderBy('id', 'DESC')->first()->id;
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.user.update', $id), [
             'name' => 'My Name',
-            'email' => 'my.name.'. random_str(10).'@mailinator.com',
+            'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ]);
-        
+
         $response->assertOk();
     }
 
@@ -102,12 +102,12 @@ class UserCRUDTest extends TestCase
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
         ->orderBy('id', 'DESC')->first()->id;
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.user.update', $id), [
             'name' => 'My Name',
-            'email' => 'my.name.'. random_str(10).'@mailinator.com',
+            'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ]);
 
@@ -118,30 +118,30 @@ class UserCRUDTest extends TestCase
     public function normal_user_can_not_update_new_user()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.user.update', 1), [
             'name' => 'My Name',
-            'email' => 'my.name.'. Carbon::now()->format('hms').'@mailinator.com',
+            'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
         ]);
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_update_new_user()
-    {        
+    {
         $response = $this->putJson(route('api.user.update', 1), [
             'name' => 'My Name',
-            'email' => 'my.name.'. Carbon::now()->format('hms').'@mailinator.com',
+            'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
         ]);
-        
+
         $response->assertUnauthorized();
     }
-        
+
     /** @test */
     public function superadmin_can_destroy_new_user()
     {
@@ -151,11 +151,11 @@ class UserCRUDTest extends TestCase
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
         ->orderBy('id', 'DESC')->first()->id;
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->deleteJson(route('api.user.destroy', $id));
-        
+
         $response->assertOk();
     }
 
@@ -168,9 +168,9 @@ class UserCRUDTest extends TestCase
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
         ->orderBy('id', 'DESC')->first()->id;
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->deleteJson(route('api.user.destroy', $id));
 
         $response->assertOk();
@@ -180,19 +180,19 @@ class UserCRUDTest extends TestCase
     public function normal_user_can_not_destroy_new_user()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->deleteJson(route('api.user.destroy', 1));
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_destroy_new_user()
-    {        
+    {
         $response = $this->deleteJson(route('api.user.destroy', 1));
-        
+
         $response->assertUnauthorized();
     }
 
@@ -200,11 +200,11 @@ class UserCRUDTest extends TestCase
     public function superadmin_can_see_index()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.user.index'));
-        
+
         $response->assertOk();
     }
 
@@ -212,9 +212,9 @@ class UserCRUDTest extends TestCase
     public function staff_can_see_index()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.user.index'));
 
         $response->assertOk();
@@ -224,19 +224,19 @@ class UserCRUDTest extends TestCase
     public function normal_user_can_not_see_index()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        
+
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.user.index'));
-        
+
         $response->assertForbidden();
     }
 
     /** @test */
     public function guest_can_not_see_index()
-    {        
+    {
         $response = $this->getJson(route('api.user.index'));
-        
+
         $response->assertUnauthorized();
     }
 }

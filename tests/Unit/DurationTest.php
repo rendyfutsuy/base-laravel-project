@@ -23,7 +23,7 @@ class DurationTest extends TestCase
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
         $y = Carbon::parse('2021-09-09 15:30:30');
-        
+
         $time = new Duration($x, $y);
 
         $this->assertEquals('05:30:30', $time->inTime());
@@ -34,7 +34,7 @@ class DurationTest extends TestCase
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
         $y = Carbon::parse('2021-09-09 15:30:30');
-        
+
         $time = new Duration($x, $y);
 
         $this->assertEquals(19830, $time->inSecond());
@@ -45,7 +45,7 @@ class DurationTest extends TestCase
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
         $y = Carbon::parse('2021-09-09 15:30:30');
-        
+
         $time = new Duration($x, $y);
 
         $this->assertEquals(330, $time->inMinute());
@@ -56,7 +56,7 @@ class DurationTest extends TestCase
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
         $y = Carbon::parse('2021-09-09 15:30:30');
-        
+
         $time = new Duration($x, $y);
 
         $this->assertEquals('5', $time->inHour());

@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Models\User;
 use App\Events\UserStored;
 use App\Events\UserUpdated;
 use Illuminate\Http\Request;
@@ -17,9 +16,9 @@ use App\Http\Repositories\Contracts\SuperadminContract;
 class SuperadminController extends Controller
 {
     use ResultResponse;
-    
+
     protected $admin;
-    
+
     public function __construct(SuperadminContract $admin)
     {
         $this->admin = $admin;
@@ -76,12 +75,13 @@ class SuperadminController extends Controller
      */
     public function update(Request $request, $id)
     {
-        if(! $this->admin->validateUserRole($this->admin->find($id))) {
+        if (! $this->admin->validateUserRole($this->admin->find($id))) {
             return $this->resultResponse('failed', 'Requested User have wrong Role', 400);
         }
 
         $admin = DB::transaction(function () use ($request, $id) {
             $this->admin->update($request->all(), $id);
+
             return $this->admin->find($id);
         });
 
@@ -99,7 +99,7 @@ class SuperadminController extends Controller
     public function destroy($id)
     {
         $admin = $this->admin->find($id);
-        
+
         DB::transaction(function () use ($id) {
             $this->admin->delete($id);
         });
@@ -107,7 +107,7 @@ class SuperadminController extends Controller
         event('user.deleted', new UserDestroyed($admin));
 
         return response()->json([
-            'message' => 'delete '. $admin->email .' success'
+            'message' => 'delete '.$admin->email.' success',
         ], 200);
     }
 }

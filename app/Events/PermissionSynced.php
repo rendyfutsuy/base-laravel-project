@@ -2,15 +2,11 @@
 
 namespace App\Events;
 
-use Spatie\Permission\Models\Role;
-use Illuminate\Broadcasting\Channel;
 use Illuminate\Queue\SerializesModels;
 use Spatie\Permission\Models\Permission;
 use Illuminate\Broadcasting\PrivateChannel;
-use Illuminate\Broadcasting\PresenceChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 
 class PermissionSynced
 {

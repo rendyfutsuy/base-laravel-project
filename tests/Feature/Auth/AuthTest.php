@@ -2,8 +2,6 @@
 
 namespace Tests\Feature\Auth;
 
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Support\Facades\Http;
 use Tests\TestCase;
 
 class AuthTest extends TestCase
@@ -28,7 +26,7 @@ class AuthTest extends TestCase
         // dd(route('api.auth.login'));
         $response = $this->postJson(route('api.auth.login'),
             $this->credential('rendy@mailinator.com', '12345'));
-            
+
         $response->assertStatus(200);
     }
 
@@ -73,7 +71,7 @@ class AuthTest extends TestCase
     {
         $this->postJson(route('api.auth.login'), [
             'email' => 'unauth@mailinator.com',
-            'password' => '22222'
+            'password' => '22222',
         ])->assertStatus(400);
     }
 
@@ -85,7 +83,7 @@ class AuthTest extends TestCase
         $userToken = $authenticatedUser->json()['data']['token'];
 
         $response = $this->withHeaders([
-            'Authorization' => 'Bearer ' . $userToken
+            'Authorization' => 'Bearer '.$userToken,
         ])->postJson(route('api.auth.logout'));
 
         $response->assertStatus(200);

@@ -5,81 +5,78 @@ namespace App\Http\Repositories;
 use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Repositories\BaseRepository;
 use App\Http\Repositories\Contracts\UserContract;
 use Spatie\Permission\Models\Role;
 
 class UserRepository extends BaseRepository implements UserContract
 {
-	/** @var User */
-	protected $user;
+    /** @var User */
+    protected $user;
 
-	protected $role = 'NORMAL_USER';
+    protected $role = 'NORMAL_USER';
 
-	public function __construct(User $user)
-	{
-		parent::__construct($user);
-		$this->user = $user;
-	}
+    public function __construct(User $user)
+    {
+        parent::__construct($user);
+        $this->user = $user;
+    }
 
-	public function validateUserRole(User $user): bool
-	{
-		return $this->user->query()->whereHas('roles', function ($roles) {
+    public function validateUserRole(User $user): bool
+    {
+        return $this->user->query()->whereHas('roles', function ($roles) {
             $role = Role::findByName($this->role, 'api');
             $roles->where('id', $role->id);
         })->exists();
-	}
+    }
 
-	public function paginated()
-	{
-		return $this->user->query()->paginate(request('per_page', 10));
-	}
+    public function paginated()
+    {
+        return $this->user->query()->paginate(request('per_page', 10));
+    }
 
-	/**
-     * @param array $attributes
-     *
+    /**
+     * @param  array  $attributes
      * @return Model
      */
     public function store(array $attributes): Model
     {
         $user = $this->user->create([
-			"name" => $attributes['name'],
-			"email" => $attributes['email'],
-			"password" => Hash::make($attributes['password']),
-		]);
+            'name' => $attributes['name'],
+            'email' => $attributes['email'],
+            'password' => Hash::make($attributes['password']),
+        ]);
 
-		$role = Role::findByName($this->role, 'api');
-		$user->syncRoles($role);
+        $role = Role::findByName($this->role, 'api');
+        $user->syncRoles($role);
 
-		return $user;
+        return $user;
     }
 
     /**
      * @param $id
-     * @param array $attributes
-     *
+     * @param  array  $attributes
      * @return void
      */
     public function update(array $attributes, $id)
     {
-		$fillables = [];
-		
-		if (count($attributes) == 0) {
-			return;
-		}
+        $fillables = [];
 
-		if (array_key_exists('name', $attributes)) {
-			$fillables['name'] = $attributes['name'];
-		}
+        if (count($attributes) == 0) {
+            return;
+        }
 
-		if (array_key_exists('email', $attributes)) {
-			$fillables['email'] = $attributes['email'];
-		}
+        if (array_key_exists('name', $attributes)) {
+            $fillables['name'] = $attributes['name'];
+        }
 
-		if (array_key_exists('password', $attributes)) {
-			$fillables['password'] = Hash::make($attributes['password']);
-		}
-		
+        if (array_key_exists('email', $attributes)) {
+            $fillables['email'] = $attributes['email'];
+        }
+
+        if (array_key_exists('password', $attributes)) {
+            $fillables['password'] = Hash::make($attributes['password']);
+        }
+
         $this->user->where('id', $id)
             ->update($fillables);
     }

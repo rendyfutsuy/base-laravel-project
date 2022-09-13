@@ -12,14 +12,14 @@ class ExampleMock3rdPartyTest extends TestCase
     | Mocking Http Class on Feature Test
     |--------------------------------------------------------------------------
     |
-    | mock Http Class so test can skip 3rd party API Request, 
+    | mock Http Class so test can skip 3rd party API Request,
     | and check the condition based on API response without even really hit Their API.
     | we can uses mock to skip those steps hopefully make the test run more efficiently.
     |
     */
 
     use MockExample;
-    
+
     /** @test */
     public function mock_fetch_from_rest_api_success()
     {
@@ -34,10 +34,10 @@ class ExampleMock3rdPartyTest extends TestCase
     {
         $this->mockPostApi();
         $response = $this->post(route('api.example.post.3rd'), [
-            'name' => "rendy",
-            'level' => "Captain",
+            'name' => 'rendy',
+            'level' => 'Captain',
         ]);
-        
+
         $response->assertStatus(201);
     }
 
@@ -46,7 +46,7 @@ class ExampleMock3rdPartyTest extends TestCase
     {
         $this->mockFetchApiFail();
         $response = $this->get(route('api.example.index.3rd'));
-        
+
         $response->assertStatus(400);
     }
 
@@ -55,8 +55,8 @@ class ExampleMock3rdPartyTest extends TestCase
     {
         $this->mockPostApiFail();
         $response = $this->post(route('api.example.post.3rd'), [
-            'name' => "rendy",
-            'level' => "Captain",
+            'name' => 'rendy',
+            'level' => 'Captain',
         ]);
 
         $response->assertStatus(400);

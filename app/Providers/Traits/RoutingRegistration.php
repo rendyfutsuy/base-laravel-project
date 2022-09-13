@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Route;
 
 trait RoutingRegistration
 {
-
     /**
      * @return array<RouteContract>
      */

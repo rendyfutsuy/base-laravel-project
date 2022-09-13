@@ -6,6 +6,7 @@ use App\Models\User;
 
 interface SuperadminContract
 {
-	public function paginated();
-	public function validateUserRole(User $user): bool;
+    public function paginated();
+
+    public function validateUserRole(User $user): bool;
 }

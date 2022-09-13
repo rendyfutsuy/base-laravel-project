@@ -7,7 +7,9 @@ use Spatie\Permission\Models\Role;
 
 interface RoleContract
 {
-	public function sync($permissions = [], Role $role): Role;
-	public function paginated();
-	public function resync(User $user, Role $role): User;
+    public function sync($permissions, Role $role): Role;
+
+    public function paginated();
+
+    public function resync(User $user, Role $role): User;
 }

@@ -10,11 +10,11 @@ use App\Http\Controllers\Superadmin\UserController;
 |
 */
 
-Route::prefix('users')->middleware('auth:api')->group(function() {
+Route::prefix('users')->middleware('auth:api')->group(function () {
     Route::get('/', [UserController::class, 'index'])
         ->middleware('permission:api.user.index')
         ->name('api.user.index');
-        
+
     Route::get('/{id}', [UserController::class, 'show'])
         ->middleware('permission:api.user.show')
         ->name('api.user.show');
@@ -22,7 +22,7 @@ Route::prefix('users')->middleware('auth:api')->group(function() {
     Route::put('/{id}', [UserController::class, 'update'])
         ->middleware('permission:api.user.update')
         ->name('api.user.update');
-        
+
     Route::delete('/{id}', [UserController::class, 'destroy'])
         ->middleware('permission:api.user.destroy')
         ->name('api.user.destroy');

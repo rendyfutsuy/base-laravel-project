@@ -11,6 +11,6 @@ interface FilterContract
      * handle query assignment
      *
      * @return mixed
-    */
+     */
     public function handle(Builder $query, Closure $next);
 }

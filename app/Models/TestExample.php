@@ -11,8 +11,11 @@ class TestExample extends Model
     use HasFactory;
 
     const ACTIVATED = 2;
+
     const PENDING = 1;
+
     const REJECTED = 3;
+
     const EXPIRED = 4;
 
     protected $table = 'test_examples';
@@ -22,7 +25,7 @@ class TestExample extends Model
         'status',
         'created_at',
         'updated_at',
-        'joined_at'
+        'joined_at',
     ];
 
     /**
@@ -37,8 +40,8 @@ class TestExample extends Model
                 $example->joined_at = Carbon::now();
                 $example->save();
             }
-            
-            if (!$example->status) {
+
+            if (! $example->status) {
                 $example->status = self::PENDING;
                 $example->save();
             }

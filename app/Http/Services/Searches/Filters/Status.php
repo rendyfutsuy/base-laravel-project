@@ -12,7 +12,7 @@ class Status implements FilterContract
     protected $status;
 
     /**
-     * @param string|null $status
+     * @param  string|null  $status
      * @return void
      */
     public function __construct($status)
@@ -25,7 +25,7 @@ class Status implements FilterContract
      */
     public function handle(Builder $query, Closure $next)
     {
-        if (!$this->keyword()) {
+        if (! $this->keyword()) {
             return $next($query);
         }
 

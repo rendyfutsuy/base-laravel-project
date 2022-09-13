@@ -4,9 +4,7 @@ namespace App\Listeners;
 
 use App\Events\ExampleUpdated;
 use Illuminate\Support\Facades\Mail;
-use Illuminate\Queue\InteractsWithQueue;
 use App\Mail\SendExampleChangeNotification;
-use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendExampleUpdateNotification
 {

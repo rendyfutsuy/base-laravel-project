@@ -6,23 +6,22 @@ use Tests\TestCase;
 use Spatie\Permission\Models\Role;
 use Tests\Feature\Components\AuthCase;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\RefreshDatabase;
 
 class ResyncPermissionToRolesTest extends TestCase
 {
     use AuthCase;
+
     /** @test */
     public function permissions_in_permission_sync_is_required()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', 1), [
             'roles' => [],
         ]);
-               
+
         $response->assertStatus(400);
     }
 
@@ -33,11 +32,11 @@ class ResyncPermissionToRolesTest extends TestCase
         $permission = Permission::find(1);
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', $permission->id), [
-            'roles' => ['try','my','logic','here'],
+            'roles' => ['try', 'my', 'logic', 'here'],
         ]);
-               
+
         $response->assertStatus(400);
     }
 
@@ -51,11 +50,11 @@ class ResyncPermissionToRolesTest extends TestCase
         $before = count($roles);
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.resync', $permission->id), [
             'roles' => array_merge($roles, [$testRole->id]),
         ]);
-        
+
         $response->assertOk();
 
         $after = Permission::findByName('api.role.index', 'api')->roles->count();
@@ -70,7 +69,7 @@ class ResyncPermissionToRolesTest extends TestCase
         $currentUser = $this->login('staff@mailinator.com');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.role.index'));
 
         $response->assertOk();
@@ -79,9 +78,9 @@ class ResyncPermissionToRolesTest extends TestCase
         $role->revokePermissionTo('api.role.index');
 
         $response = $this->withHeaders([
-            "Authorization" => "Bearer " . $currentUser['token']
+            'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.role.index'));
-            
+
         $response->assertForbidden();
     }
 }

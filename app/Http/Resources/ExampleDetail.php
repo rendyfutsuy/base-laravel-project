@@ -20,7 +20,7 @@ class ExampleDetail extends JsonResource
                 'id' => $this->id,
                 'name' => $this->name,
                 'status' => $this->status,
-            ]
+            ],
         ];
     }
 }
