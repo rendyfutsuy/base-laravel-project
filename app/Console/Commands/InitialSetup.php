@@ -20,7 +20,7 @@ class InitialSetup extends Command
      *
      * @var string
      */
-    protected $description = 'cp .env, cp .env.testing, , cp phpunit.xml, Run composer install, yarn install, php artisan key:generate, php artisan migrate:fresh, php artisan db:seed --class=LiveSeeder, yarn production';
+    protected $description = 'Run all Dependencies, prepare database migration and seeder for current server database, generate auth and finally compile Dependencies';
 
     /**
      * Create a new command instance.
@@ -42,10 +42,10 @@ class InitialSetup extends Command
         if ($this->option('with-env')) {
             exec('cp .env.example .env');
             $this->info('.env File successfully copied <3');
-    
+
             exec('cp .env.testing.example .env.testing');
             $this->info('.env.testing File successfully copied <3');
-    
+
             exec('cp phpunit.xml.example phpunit.xml');
             $this->info('phpunit.xml File successfully copied <3');
 
@@ -62,11 +62,12 @@ class InitialSetup extends Command
 
         exec('php artisan key:generate');
         $this->info('Application Key Successfully Added <3');
-        
+
         try {
             User::all();
         } catch (\Throwable $th) {
             $this->error('Database Not Found');
+
             return 0;
         }
 
@@ -77,6 +78,7 @@ class InitialSetup extends Command
         } catch (\Throwable $th) {
             $this->error('there\'s something wrong with database. check if the database is exists or not');
             throw $th;
+
             return 0;
         }
 

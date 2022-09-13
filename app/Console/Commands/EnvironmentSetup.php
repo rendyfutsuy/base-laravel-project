@@ -2,7 +2,6 @@
 
 namespace App\Console\Commands;
 
-use App\Models\User;
 use Illuminate\Console\Command;
 
 class EnvironmentSetup extends Command
@@ -19,7 +18,7 @@ class EnvironmentSetup extends Command
      *
      * @var string
      */
-    protected $description = 'cp .env, cp .env.testing, , cp phpunit.xml';
+    protected $description = 'prepare environment file';
 
     /**
      * Create a new command instance.

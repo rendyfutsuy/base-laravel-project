@@ -8,7 +8,16 @@
     "notPath": [
         "server.php",
         "public/index.php",
-        "bootstrap/app.php"
+        "bootstrap/app.php",
+        "app/Http/Kernel.php",
+        "app/Http/Middleware/Authenticate.php",
+        "app/Http/Middleware/EncryptCookies.php",
+        "app/Http/Middleware/PreventRequestsDuringMaintenance.php",
+        "app/Http/Middleware/RedirectIfAuthenticated.php",
+        "app/Http/Middleware/TrimStrings.php",
+        "app/Http/Middleware/TrustHosts.php",
+        "app/Http/Middleware/TrustProxies.php",
+        "app/Http/Middleware/VerifyCsrfToken.php"
     ],
     "rules": {
         "ordered_imports": false,

@@ -20,7 +20,7 @@ class ReSetup extends Command
      *
      * @var string
      */
-    protected $description = 'Run composer install, yarn install, php artisan migrate:fresh, php artisan db:seed, yarn production';
+    protected $description = 'Re-run All Dependencies, Re-run Database Migration and Seeder and Re-run Generate Auth';
 
     /**
      * Create a new command instance.
@@ -43,19 +43,22 @@ class ReSetup extends Command
             User::all();
         } catch (\Throwable $th) {
             $this->error('Database Not Found');
+
             return 0;
         }
 
         if (! $this->argument('seeder')) {
             $this->error('Please Insert Seeder Name <3');
+
             return 0;
         }
 
         $seeder = ucfirst($this->argument('seeder'));
-        $filePath = 'database\seeders\\'. $seeder.'.php';
-        
+        $filePath = 'database\seeders\\'.$seeder.'.php';
+
         if (! File::exists($filePath)) {
             $this->error('seeder file not found <3');
+
             return 0;
         }
 
@@ -73,6 +76,7 @@ class ReSetup extends Command
         } catch (\Throwable $th) {
             $this->error('there\'s something wrong with database. check if the database is exists or not');
             throw $th;
+
             return 0;
         }
 
@@ -82,7 +86,7 @@ class ReSetup extends Command
             $this->info('Passport Key Generated <3');
         }
 
-        $result = exec('php artisan db:seed --class='. $seeder);
+        $result = exec('php artisan db:seed --class='.$seeder);
         $this->info($result);
         $this->info('Seeder Successfully Added <3');
 

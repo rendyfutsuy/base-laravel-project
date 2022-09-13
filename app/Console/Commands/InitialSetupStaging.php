@@ -19,7 +19,7 @@ class InitialSetupStaging extends Command
      *
      * @var string
      */
-    protected $description = 'cp .env, cp .env.testing, , cp phpunit.xml, Run composer install, yarn install, php artisan key:generate, php artisan migrate:fresh, php artisan db:seed --class=LocalSeeder, yarn production';
+    protected $description = 'Run all Dependencies, prepare database migration and seeder for staging database, generate auth and finally compile Dependencies';
 
     /**
      * Create a new command instance.
@@ -41,10 +41,10 @@ class InitialSetupStaging extends Command
         if ($this->option('with-env')) {
             exec('cp .env.example .env');
             $this->info('.env File successfully copied <3');
-    
+
             exec('cp .env.testing.example .env.testing');
             $this->info('.env.testing File successfully copied <3');
-    
+
             exec('cp phpunit.xml.example phpunit.xml');
             $this->info('phpunit.xml File successfully copied <3');
 
@@ -66,6 +66,7 @@ class InitialSetupStaging extends Command
         } catch (\Throwable $th) {
             $this->error('there\'s something wrong with database. check if the database is exists or not');
             throw $th;
+
             return 0;
         }
 
