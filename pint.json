@@ -1,0 +1,21 @@
+{
+    "preset": "laravel",
+    "exclude": [
+        "app/Console",
+        "config",
+        "resources/lang"
+    ],
+    "notPath": [
+        "server.php",
+        "public/index.php",
+        "bootstrap/app.php"
+    ],
+    "rules": {
+        "ordered_imports": false,
+        "indentation_type": false,
+        "php_unit_method_casing": {
+            "case": "snake_case"
+        },
+        "single_trait_insert_per_statement": false
+    }
+}
