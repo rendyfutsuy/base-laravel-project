@@ -62,7 +62,7 @@ Run Local Test to assert all code and setup all work without any fail attempt.
 ```sh
 > php artisan local:test
 ```
-in case there an error for `Pint`, we can fix it with this also re-run all test again
+in case there an error for `code indexi`, we can fix it with this also re-run all test again
 ```sh
 > php artisan local:test --with-code-fix
 ```
