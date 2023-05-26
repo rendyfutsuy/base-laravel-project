@@ -34,10 +34,6 @@ class UserRepository extends BaseRepository implements UserContract
         return $this->user->query()->paginate(request('per_page', 10));
     }
 
-    /**
-     * @param  array  $attributes
-     * @return Model
-     */
     public function store(array $attributes): Model
     {
         $user = $this->user->create([
@@ -53,8 +49,6 @@ class UserRepository extends BaseRepository implements UserContract
     }
 
     /**
-     * @param $id
-     * @param  array  $attributes
      * @return void
      */
     public function update(array $attributes, $id)

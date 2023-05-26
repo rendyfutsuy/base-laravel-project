@@ -19,10 +19,6 @@ class RoleRepository extends BaseRepository implements RoleContract
         $this->role = $role;
     }
 
-    /**
-     * @param  array  $attributes
-     * @return Model
-     */
     public function store(array $attributes): Model
     {
         return $this->role->create([

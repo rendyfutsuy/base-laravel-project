@@ -13,7 +13,6 @@ trait BaseFoundation
 
     /**
      * @param  \ReflectionParameter[]  $params
-     * @return array
      */
     protected function mapParameters(array $params): array
     {

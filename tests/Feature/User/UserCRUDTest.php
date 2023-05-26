@@ -80,7 +80,7 @@ class UserCRUDTest extends TestCase
             $role = Role::findByName('NORMAL_USER', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -101,7 +101,7 @@ class UserCRUDTest extends TestCase
             $role = Role::findByName('NORMAL_USER', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -150,7 +150,7 @@ class UserCRUDTest extends TestCase
             $role = Role::findByName('NORMAL_USER', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -167,7 +167,7 @@ class UserCRUDTest extends TestCase
             $role = Role::findByName('NORMAL_USER', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],

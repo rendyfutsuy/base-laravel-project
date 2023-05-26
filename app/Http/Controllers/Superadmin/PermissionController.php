@@ -38,7 +38,6 @@ class PermissionController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -70,7 +69,6 @@ class PermissionController extends Controller
     /**
      * sync multiple permission to role.
      *
-     * @param  \Spatie\Permission\Models\Permission  $permission
      * @return \App\Http\Resources\PermissionSyncedResource
      */
     public function resync(PermissionsSynchro $request, Permission $permission)
