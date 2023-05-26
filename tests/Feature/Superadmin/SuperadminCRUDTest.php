@@ -80,7 +80,7 @@ class SuperadminCRUDTest extends TestCase
             $role = Role::findByName('STAFF', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -145,7 +145,7 @@ class SuperadminCRUDTest extends TestCase
             $role = Role::findByName('STAFF', 'api');
             $roles->where('id', $role->id);
         })->whereNotIn('id', [$currentUser['user']['id']])
-        ->orderBy('id', 'DESC')->first()->id;
+            ->orderBy('id', 'DESC')->first()->id;
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],

@@ -40,7 +40,6 @@ class RoleController extends Controller
     /**
      * Store a newly created resource in storage.
      *
-     * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request)
@@ -72,7 +71,6 @@ class RoleController extends Controller
     /**
      * sync multiple permission to role.
      *
-     * @param  \Spatie\Permission\Models\Role  $role
      * @return \App\Http\Resources\RoleSynchResource
      */
     public function sync(RoleSynchro $request, Role $role)
@@ -89,7 +87,6 @@ class RoleController extends Controller
     /**
      * sync multiple permission to role.
      *
-     * @param  \Spatie\Permission\Models\Role  $role
      * @return \App\Http\Resources\RoleSynchResource
      */
     public function resync(User $user, Role $role)

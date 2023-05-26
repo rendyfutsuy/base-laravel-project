@@ -18,10 +18,6 @@ class PermissionRepository extends BaseRepository implements PermissionContract
         $this->permission = $permission;
     }
 
-    /**
-     * @param  array  $attributes
-     * @return Model
-     */
     public function store(array $attributes): Model
     {
         $permission = $this->permission->create([
