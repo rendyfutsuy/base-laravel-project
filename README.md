@@ -17,9 +17,8 @@
 
 ## Documentation
 
-We also have more detailed documentation in case you want to learn more on how we develop application with Roketin Base Project [documentation](https://), there best practice for development, how we code, how we implement repository pattern and pipeline design pattern and many more..
+We also have more detailed documentation in case you want to learn more on how we develop application with My Base Project [documentation](https://), there best practice for development, how we code, how we implement repository pattern and pipeline design pattern and many more..
 
-  
 
 ## Setup Project
 
