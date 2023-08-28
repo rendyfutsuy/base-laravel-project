@@ -23,3 +23,7 @@ firebase-credential.json
 phpunit.xml
 yarn.lock
 composer.lock
+
+# Line Below represent for ignoring result of sonarqube scanner's folder
+/.scannerwork
+/nginx/log
