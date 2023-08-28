@@ -76,6 +76,7 @@ abstract class HttpSearch extends Form
      */
     protected function thenReturn($result)
     {
+        return $result;
     }
 
     protected function parsedFilters(): array

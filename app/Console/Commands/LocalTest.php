@@ -69,8 +69,6 @@ class LocalTest extends Command
         } catch (\Throwable $th) {
             $this->error('there\'s something wrong with database. check if the database is exists or not');
             throw $th;
-
-            return 0;
         }
 
         if (! File::exists('storage\oauth-private.key')) {
