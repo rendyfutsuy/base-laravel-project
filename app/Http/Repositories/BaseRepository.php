@@ -3,6 +3,7 @@
 namespace App\Http\Repositories;
 
 use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Repositories\Contracts\BaseRepositoryContract;
 
@@ -41,13 +42,19 @@ class BaseRepository implements BaseRepositoryContract
     public function getByCriteria(array $criteria): Collection
     {
         return $this->model
-            ->where($criteria)
+            ->where(function ($filters) use ($criteria) {
+                foreach ($criteria as $key => $value) {
+                    $filters->where($key, $value);
+                }
+            })
             ->get();
     }
 
     public function store(array $attributes): Model
     {
-        return $this->model->create($attributes);
+        return DB::transaction(function () use ($attributes) {
+            return $this->model->create($attributes);
+        });
     }
 
     /**
@@ -55,9 +62,11 @@ class BaseRepository implements BaseRepositoryContract
      */
     public function update(array $attributes, $id)
     {
-        return $this->model
-            ->where('id', $id)
-            ->update($attributes);
+        return DB::transaction(function () use ($attributes, $id) {
+            return $this->model
+                ->where('id', $id)
+                ->update($attributes);
+        });
     }
 
     /**
