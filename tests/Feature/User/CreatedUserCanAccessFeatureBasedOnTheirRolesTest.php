@@ -4,7 +4,7 @@ namespace Tests\Feature\User;
 
 use Tests\TestCase;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
 
 class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
@@ -172,10 +172,12 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
             'name' => 'My Name',
         ])->assertForbidden();
 
+        $role = Role::findByName('STAFF', 'api');
+
         // sync role
         $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.role.permission.sync', 1), [
+        ])->postJson(route('api.role.permission.sync', $role->id), [
             'permissions' => [],
         ])->assertForbidden();
     }
@@ -330,10 +332,12 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
             'name' => 'My Name',
         ])->assertForbidden();
 
+        $role = Role::findByName('STAFF', 'api');
+
         // sync role
         $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.role.permission.sync', 1), [
+        ])->postJson(route('api.role.permission.sync', $role->id), [
             'permissions' => [],
         ])->assertForbidden();
     }

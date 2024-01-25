@@ -3,9 +3,9 @@
 namespace Tests\Feature\Permissions;
 
 use Tests\TestCase;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
+use App\Models\Hierarchy\Permission;
 use Tests\Feature\Components\AuthCase;
-use Spatie\Permission\Models\Permission;
 
 class PermissionCRUDTest extends TestCase
 {
@@ -20,7 +20,7 @@ class PermissionCRUDTest extends TestCase
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
-            'roles' => [Role::find(1)->id],
+            'roles' => [Role::where('name', 'SUPER_ADMIN')->first()->id],
         ]);
 
         $response->assertOk();
@@ -35,7 +35,7 @@ class PermissionCRUDTest extends TestCase
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
-            'roles' => [Role::find(1)->id],
+            'roles' => [Role::where('name', 'SUPER_ADMIN')->first()->id],
         ]);
 
         $response->assertForbidden();
@@ -50,7 +50,7 @@ class PermissionCRUDTest extends TestCase
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
-            'roles' => [Role::find(1)->id],
+            'roles' => [Role::where('name', 'SUPER_ADMIN')->first()->id],
         ]);
 
         $response->assertForbidden();
@@ -61,7 +61,7 @@ class PermissionCRUDTest extends TestCase
     {
         $response = $this->postJson(route('api.permission.store'), [
             'name' => 'api.example.store',
-            'roles' => [Role::find(1)->id],
+            'roles' => [Role::where('name', 'SUPER_ADMIN')->first()->id],
         ]);
 
         $response->assertUnauthorized();
@@ -115,7 +115,7 @@ class PermissionCRUDTest extends TestCase
     public function superadmin_can_resync_permission()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        $permission = Permission::find(15);
+        $permission = Permission::first();
         $roles = $permission->roles->pluck('id')->toArray();
 
         $response = $this->withHeaders([
@@ -131,7 +131,7 @@ class PermissionCRUDTest extends TestCase
     public function normal_permission_can_not_resync_permission()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        $permission = Permission::find(1);
+        $permission = Permission::first();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -145,7 +145,7 @@ class PermissionCRUDTest extends TestCase
     /** @test */
     public function guest_can_not_resync_permission()
     {
-        $permission = Permission::find(1);
+        $permission = Permission::first();
 
         $response = $this->postJson(route('api.permission.resync', $permission->id), [
             'roles' => [1, 2, 3],
@@ -158,7 +158,7 @@ class PermissionCRUDTest extends TestCase
     public function staff_can_not_resync_permission()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        $permission = Permission::find(1);
+        $permission = Permission::first();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],

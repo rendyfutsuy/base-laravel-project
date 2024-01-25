@@ -3,9 +3,9 @@
 namespace Tests\Feature\Roles;
 
 use Tests\TestCase;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
-use Spatie\Permission\Models\Permission;
+use App\Models\Hierarchy\Permission;
 
 class SyncPermissionByRoleTest extends TestCase
 {
@@ -15,10 +15,11 @@ class SyncPermissionByRoleTest extends TestCase
     public function permissions_in_permission_sync_is_required()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.role.permission.sync', 1), [
+        ])->postJson(route('api.role.permission.sync', $role->id), [
             'permissions' => [],
         ]);
 
@@ -29,7 +30,7 @@ class SyncPermissionByRoleTest extends TestCase
     public function permissions_in_permission_sync_is_must_be_array_numeric()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        $role = Role::find(1);
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('name');
 
         $response = $this->withHeaders([
@@ -58,7 +59,7 @@ class SyncPermissionByRoleTest extends TestCase
     /** @test */
     public function superadmin_sync_role_index_to_staff_role()
     {
-        $role = Role::find(2);
+        $role = Role::where('name', 'STAFF')->first();
         $permissions = $role->permissions->pluck('id')->toArray();
         $testPermission = Permission::findByName('api.role.index', 'api');
 
@@ -89,8 +90,9 @@ class SyncPermissionByRoleTest extends TestCase
 
         $response->assertOk();
 
-        $role = Role::find(2);
-        $role->revokePermissionTo('api.role.index');
+        $role = Role::where('name', 'STAFF')->first();
+        $permission = Permission::where('name', 'api.role.index')->first();
+        $role->permissions()->detach($permission->id);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],

@@ -3,7 +3,7 @@
 namespace Tests\Feature\Roles;
 
 use Tests\TestCase;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
 
 class RoleCRUDTest extends TestCase
@@ -111,7 +111,7 @@ class RoleCRUDTest extends TestCase
     public function superadmin_can_sync_new_permission()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        $role = Role::find(1);
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('id')->toArray();
 
         $response = $this->withHeaders([
@@ -127,7 +127,7 @@ class RoleCRUDTest extends TestCase
     public function staff_can_not_sync_new_permission()
     {
         $currentUser = $this->login('staff@mailinator.com');
-        $role = Role::find(1);
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('id');
 
         $response = $this->withHeaders([
@@ -143,7 +143,7 @@ class RoleCRUDTest extends TestCase
     public function normal_permission_can_not_sync_new_permission()
     {
         $currentUser = $this->login('user.1@mailinator.com');
-        $role = Role::find(1);
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('id');
 
         $response = $this->withHeaders([
@@ -158,7 +158,7 @@ class RoleCRUDTest extends TestCase
     /** @test */
     public function guest_can_not_sync_new_permission()
     {
-        $role = Role::find(1);
+        $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('id');
 
         $response = $this->postJson(route('api.role.permission.sync', $role->id), [

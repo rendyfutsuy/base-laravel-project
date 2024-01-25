@@ -4,7 +4,7 @@ namespace Tests\Feature\Roles;
 
 use Tests\TestCase;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
 
 class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
@@ -212,10 +212,11 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
             'name' => 'My Name',
         ])->assertForbidden();
 
+        $role = Role::findByName('STAFF', 'api');
         // sync role
         $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.role.permission.sync', 1), [
+        ])->postJson(route('api.role.permission.sync', $role->id), [
             'permissions' => [],
         ])->assertForbidden();
     }

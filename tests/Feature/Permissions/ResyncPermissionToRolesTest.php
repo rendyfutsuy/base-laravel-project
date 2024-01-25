@@ -3,9 +3,9 @@
 namespace Tests\Feature\Permissions;
 
 use Tests\TestCase;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
+use App\Models\Hierarchy\Permission;
 use Tests\Feature\Components\AuthCase;
-use Spatie\Permission\Models\Permission;
 
 class ResyncPermissionToRolesTest extends TestCase
 {
@@ -15,10 +15,11 @@ class ResyncPermissionToRolesTest extends TestCase
     public function permissions_in_permission_sync_is_required()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
+        $permission = Permission::first();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.permission.resync', 1), [
+        ])->postJson(route('api.permission.resync', $permission->id), [
             'roles' => [],
         ]);
 
@@ -26,10 +27,10 @@ class ResyncPermissionToRolesTest extends TestCase
     }
 
     /** @test */
-    public function permissions_in_permission_sync_is_must_be_array_numeric()
+    public function permissions_in_permission_sync_is_must_exists()
     {
         $currentUser = $this->login('superadmin@mailinator.com');
-        $permission = Permission::find(1);
+        $permission = Permission::first();
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
@@ -45,7 +46,7 @@ class ResyncPermissionToRolesTest extends TestCase
     {
         $currentUser = $this->login('superadmin@mailinator.com');
         $permission = clone Permission::findByName('api.role.index', 'api');
-        $testRole = Role::find(2);
+        $testRole = Role::where('name', 'STAFF')->first();
         $roles = $permission->roles->pluck('id')->toArray();
         $before = count($roles);
 
@@ -74,8 +75,9 @@ class ResyncPermissionToRolesTest extends TestCase
 
         $response->assertOk();
 
-        $role = Role::find(2);
-        $role->revokePermissionTo('api.role.index');
+        $role = Role::where('name', 'STAFF')->first();
+        $permission = Permission::where('name', 'api.role.index')->first();
+        $role->permissions()->detach($permission->id);
 
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],

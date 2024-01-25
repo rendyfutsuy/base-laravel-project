@@ -5,7 +5,7 @@ namespace Tests\Feature\Superadmin;
 use Carbon\Carbon;
 use Tests\TestCase;
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
 
 class SuperadminCRUDTest extends TestCase
