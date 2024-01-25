@@ -8,8 +8,8 @@ volumes:
   app-datastore:
 
 services:
-  app-mysqldb:
-    container_name: app-mysqldb
+  app-mysqldb-base:
+    container_name: app-mysqldb-base
     restart : unless-stopped
     image: mysql:latest
     networks:
@@ -20,7 +20,7 @@ services:
     volumes:
       - app-datastore:/var/lib/mysql:rw
 
-  app-php:
+  app-php-base:
     build:
       context: ./
     container_name: app-php

@@ -20,6 +20,7 @@ _ide_helper.php
 .idea
 firebase-credentials.json
 firebase-credential.json
+docker-compose.yaml
 phpunit.xml
 yarn.lock
 composer.lock
