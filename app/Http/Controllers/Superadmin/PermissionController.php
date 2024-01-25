@@ -2,12 +2,12 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Events\PermissionsStored;
 use Illuminate\Http\Request;
 use App\Events\PermissionSynced;
+use App\Events\PermissionsStored;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use Spatie\Permission\Models\Permission;
+use App\Models\Hierarchy\Permission;
 use App\Http\Requests\PermissionsSynchro;
 use App\Http\Resources\PermissionResource;
 use App\Http\Resources\PermissionSyncedResource;

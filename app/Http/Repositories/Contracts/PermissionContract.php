@@ -2,7 +2,7 @@
 
 namespace App\Http\Repositories\Contracts;
 
-use Spatie\Permission\Models\Permission;
+use App\Models\Hierarchy\Permission;
 
 interface PermissionContract
 {

@@ -3,7 +3,7 @@
 namespace App\Http\Repositories\Contracts;
 
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 
 interface RoleContract
 {

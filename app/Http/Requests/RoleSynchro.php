@@ -28,7 +28,7 @@ class RoleSynchro extends FormRequest
     {
         return [
             'permissions' => 'required|array',
-            'permissions.*' => 'required|numeric',
+            'permissions.*' => 'required|exists:permissions,id',
         ];
     }
 

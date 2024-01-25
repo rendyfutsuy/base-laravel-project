@@ -3,9 +3,9 @@
 namespace App\Http\Repositories;
 
 use App\Models\User;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
+use App\Models\Hierarchy\Permission;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Permission;
 use App\Http\Repositories\Contracts\RoleContract;
 
 class RoleRepository extends BaseRepository implements RoleContract

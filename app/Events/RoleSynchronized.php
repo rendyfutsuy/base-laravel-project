@@ -6,7 +6,7 @@ use Illuminate\Broadcasting\InteractsWithSockets;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 
 class RoleSynchronized
 {

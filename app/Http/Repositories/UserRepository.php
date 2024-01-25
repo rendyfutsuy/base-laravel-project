@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Repositories\Contracts\UserContract;
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
 
 class UserRepository extends BaseRepository implements UserContract
 {

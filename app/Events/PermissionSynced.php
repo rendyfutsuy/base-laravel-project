@@ -3,7 +3,7 @@
 namespace App\Events;
 
 use Illuminate\Queue\SerializesModels;
-use Spatie\Permission\Models\Permission;
+use App\Models\Hierarchy\Permission;
 use Illuminate\Broadcasting\PrivateChannel;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Broadcasting\InteractsWithSockets;

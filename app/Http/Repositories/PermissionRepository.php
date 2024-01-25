@@ -2,9 +2,10 @@
 
 namespace App\Http\Repositories;
 
-use Spatie\Permission\Models\Role;
+use App\Models\Hierarchy\Role;
+use App\Models\Hierarchy\Permission;
 use Illuminate\Database\Eloquent\Model;
-use Spatie\Permission\Models\Permission;
+use App\Http\Repositories\BaseRepository;
 use App\Http\Repositories\Contracts\PermissionContract;
 
 class PermissionRepository extends BaseRepository implements PermissionContract

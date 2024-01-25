@@ -2,15 +2,24 @@
 
 namespace App\Models;
 
+use Laravel\Passport\HasApiTokens;
+use App\Models\Traits\UuidModelTrait;
 use Spatie\Permission\Traits\HasRoles;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles, HasApiTokens;
+    use HasFactory, Notifiable, HasRoles, HasApiTokens, UuidModelTrait;
+
+    protected $table = 'users';
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     /**
      * The attributes that are mass assignable.
@@ -41,4 +50,21 @@ class User extends Authenticatable
     protected $dates = [
         'email_verified_at',
     ];
+
+    public function getAssignedPermissionsAttribute(): array
+    {
+        if (empty($this->roles)) {
+            return [];
+        }
+        
+        $permissions = [];
+
+        foreach ($this->roles as $role) {
+            foreach ($role->permissions as $permission) {
+                $permissions[] = $permission->name;
+            }
+        }
+
+        return $permissions;
+    }
 }
