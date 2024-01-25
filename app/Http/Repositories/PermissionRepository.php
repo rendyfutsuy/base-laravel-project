@@ -5,7 +5,6 @@ namespace App\Http\Repositories;
 use App\Models\Hierarchy\Role;
 use App\Models\Hierarchy\Permission;
 use Illuminate\Database\Eloquent\Model;
-use App\Http\Repositories\BaseRepository;
 use App\Http\Repositories\Contracts\PermissionContract;
 
 class PermissionRepository extends BaseRepository implements PermissionContract

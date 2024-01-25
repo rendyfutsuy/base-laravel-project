@@ -56,7 +56,7 @@ class User extends Authenticatable
         if (empty($this->roles)) {
             return [];
         }
-        
+
         $permissions = [];
 
         foreach ($this->roles as $role) {

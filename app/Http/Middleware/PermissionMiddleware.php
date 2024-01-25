@@ -2,7 +2,6 @@
 
 namespace App\Http\Middleware;
 
-use App\Helpers\ApiResponseTrait;
 use Closure;
 use Illuminate\Http\Request;
 
