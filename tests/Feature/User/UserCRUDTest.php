@@ -31,8 +31,11 @@ class UserCRUDTest extends TestCase
     /** @test */
     public function staff_can_store_new_user()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $user = User::whereHas('roles', function ($roles) {
+            $roles->where('name', 'STAFF');
+        })->first();
 
+        $currentUser = $this->login($user->email);
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->postJson(route('api.user.store'), [
@@ -96,7 +99,11 @@ class UserCRUDTest extends TestCase
     /** @test */
     public function staff_can_update_new_user()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $user = User::whereHas('roles', function ($roles) {
+            $roles->where('name', 'STAFF');
+        })->first();
+
+        $currentUser = $this->login($user->email);
         $id = User::whereHas('roles', function ($roles) {
             $role = Role::findByName('NORMAL_USER', 'api');
             $roles->where('id', $role->id);
@@ -223,8 +230,11 @@ class UserCRUDTest extends TestCase
     /** @test */
     public function normal_user_can_not_see_index()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $user = User::whereHas('roles', function ($roles) {
+            $roles->where('name', 'NORMAL_USER');
+        })->first();
 
+        $currentUser = $this->login($user->email);
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->getJson(route('api.user.index'));

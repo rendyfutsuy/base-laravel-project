@@ -3,6 +3,7 @@
 namespace Tests\Feature\Roles;
 
 use Tests\TestCase;
+use App\Models\User;
 use App\Models\Hierarchy\Role;
 use Tests\Feature\Components\AuthCase;
 
@@ -126,7 +127,11 @@ class RoleCRUDTest extends TestCase
     /** @test */
     public function staff_can_not_sync_new_permission()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $user = User::whereHas('roles', function ($roles) {
+            $roles->where('name', 'STAFF');
+        })->first();
+
+        $currentUser = $this->login($user->email);
         $role = Role::where('name', 'SUPER_ADMIN')->first();
         $permissions = $role->permissions->pluck('id');
 

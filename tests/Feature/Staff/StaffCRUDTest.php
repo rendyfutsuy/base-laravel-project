@@ -96,8 +96,11 @@ class StaffCRUDTest extends TestCase
     /** @test */
     public function staff_can_not_update_new_staff()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $user = User::whereHas('roles', function ($roles) {
+            $roles->where('name', 'STAFF');
+        })->first();
 
+        $currentUser = $this->login($user->email);
         $response = $this->withHeaders([
             'Authorization' => 'Bearer '.$currentUser['token'],
         ])->putJson(route('api.staff.update', 1), [

@@ -33,7 +33,7 @@ abstract class HttpSearch extends Form
      *
      * @return void
      */
-    public function __construct(Pipeline $pipeline, Request $request, Laravel $laravel = null)
+    public function __construct(Pipeline $pipeline, Request $request, ?Laravel $laravel = null)
     {
         $this->pipeline = $pipeline;
         $this->request = $request;

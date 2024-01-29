@@ -11,7 +11,7 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable
 {
-    use HasFactory, Notifiable, HasRoles, HasApiTokens, UuidModelTrait;
+    use HasApiTokens, HasFactory, HasRoles, Notifiable, UuidModelTrait;
 
     protected $table = 'users';
 

@@ -14,11 +14,11 @@ trait ResultResponse
         $response = [];
         $response['status'] = $status;
 
-        if (null !== $message) {
+        if ($message !== null) {
             $response['message'] = $message;
         }
 
-        if (null !== $data) {
+        if ($data !== null) {
             $response['data'] = $data;
         }
 

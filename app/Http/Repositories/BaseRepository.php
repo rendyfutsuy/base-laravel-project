@@ -29,9 +29,6 @@ class BaseRepository implements BaseRepositoryContract
         return $this->model->findOrFail($id);
     }
 
-    /**
-     * @return Model
-     */
     public function findByCriteria(array $criteria): ?Model
     {
         return $this->model
