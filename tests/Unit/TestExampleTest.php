@@ -31,23 +31,23 @@ class TestExampleTest extends TestCase
     /** @test  */
     public function status_text_attribute_can_append_text_to_indicate_status()
     {
-        $example = TestExample::find(1);
+        $example = TestExample::where('name', 'Adit Saja')->first();
         $this->assertEquals(__('status.active'), $example->status_text);
 
-        $example = TestExample::find(2);
+        $example = TestExample::where('name', 'Zanoba Shirone')->first();
         $this->assertEquals(__('status.expired'), $example->status_text);
 
-        $example = TestExample::find(3);
+        $example = TestExample::where('name', 'luigi Gundam')->first();
         $this->assertEquals(__('status.rejected'), $example->status_text);
 
-        $example = TestExample::find(7);
+        $example = TestExample::where('name', 'Dianmund')->first();
         $this->assertEquals(__('status.pending'), $example->status_text);
     }
 
     /** @test  */
     public function joined_at_format_is_overidden_by_mutator()
     {
-        $example = TestExample::find(1);
+        $example = TestExample::where('name', 'Adit Saja')->first();
         $this->assertEquals('2021/09/09 10:00:00', $example->joined_at);
         $this->assertTrue($example->joined_timestamp instanceof Carbon);
     }
