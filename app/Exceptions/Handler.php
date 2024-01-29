@@ -36,7 +36,7 @@ class Handler extends ExceptionHandler
     {
         $this->reportable(function (Throwable $e) {
             return response()->json([
-                'message' => $e->getMessage()
+                'message' => $e->getMessage(),
             ], 400);
         });
     }

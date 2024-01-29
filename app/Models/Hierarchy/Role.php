@@ -25,9 +25,4 @@ class Role extends Base
     {
         $this->attributes['guard_name'] = 'api';
     }
-
-    public function revokePermissionTo($permission)
-    {
-        return parent::revokePermissionTo($permission);
-    }
 }

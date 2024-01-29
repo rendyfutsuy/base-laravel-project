@@ -158,9 +158,7 @@ if (! function_exists('mask_email')) {
         $firstChar2 = substr($chunks['1'], 0, -1 * ($strLength2 - 3));
         $stars2 = str_repeat('*', $strLength2 - 3);
 
-        $email = $firstChar1.$stars1.'@'.$firstChar2.$stars2;
-
-        return $email;
+        return $firstChar1.$stars1.'@'.$firstChar2.$stars2;
     }
 }
 
