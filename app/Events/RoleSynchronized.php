@@ -22,8 +22,7 @@ class RoleSynchronized
      */
     public function __construct(Role $role)
     {
-        // Updated Role updated_at value
-        $role->save();
+        $this->role = $role;
     }
 
     /**

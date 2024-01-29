@@ -55,7 +55,7 @@ class UserRepository extends BaseRepository implements UserContract
     {
         $fillables = [];
 
-        if (count($attributes) == 0) {
+        if (empty($attributes)) {
             return;
         }
 
