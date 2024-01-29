@@ -3,12 +3,17 @@
 namespace App\Models;
 
 use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\Standardization\BaseModel;
 
-class TestExample extends Model
+class TestExample extends BaseModel
 {
-    use HasFactory;
+    protected $table = 'test_examples';
+
+    protected $primaryKey = 'id';
+
+    protected $keyType = 'string';
+
+    public $incrementing = false;
 
     const ACTIVATED = 2;
 
@@ -18,9 +23,8 @@ class TestExample extends Model
 
     const EXPIRED = 4;
 
-    protected $table = 'test_examples';
-
     protected $fillable = [
+        'id',
         'name',
         'status',
         'created_at',
@@ -28,13 +32,10 @@ class TestExample extends Model
         'joined_at',
     ];
 
-    /**
-     * The "booted" method of the model.
-     *
-     * @return void
-     */
     protected static function booted()
     {
+        parent::booted();
+
         static::created(function ($example) {
             if (! $example->joined_at) {
                 $example->joined_at = Carbon::now();

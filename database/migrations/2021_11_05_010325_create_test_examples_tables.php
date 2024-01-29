@@ -14,10 +14,14 @@ class CreateTestExamplesTables extends Migration
     public function up()
     {
         Schema::create('test_examples', function (Blueprint $table) {
-            $table->id();
+            $table->string('id')
+                ->index()
+                ->unique()
+                ->primary();
             $table->string('name')->nullable();
             $table->integer('status')->nullable();
             $table->timestamp('joined_at')->nullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }
