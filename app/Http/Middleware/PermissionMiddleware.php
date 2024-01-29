@@ -12,7 +12,7 @@ class PermissionMiddleware
      * Based On Permission Middleware's Logic
      * From Spatie\Permission\Middlewares\PermissionMiddleware
      */
-    public function handle(Request $request, Closure $next, $guard = 'api')
+    public function handle(Request $request, Closure $next)
     {
         $user = auth()->user()->fresh();
         $authenticatedUserPermissions = $user->assigned_permissions;
