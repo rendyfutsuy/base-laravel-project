@@ -12,6 +12,9 @@ class PermissionSynced
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /** @var App\Models\Hierarchy\Permission */
+    public $permission;
+
     /**
      * Create a new event instance.
      *
@@ -19,7 +22,7 @@ class PermissionSynced
      */
     public function __construct(Permission $permission)
     {
-        //
+        $this->permission = $permission;
     }
 
     /**

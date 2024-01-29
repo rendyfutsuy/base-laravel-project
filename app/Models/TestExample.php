@@ -32,9 +32,9 @@ class TestExample extends BaseModel
         'joined_at',
     ];
 
-    protected static function booted()
+    protected static function boot()
     {
-        parent::booted();
+        parent::boot();
 
         static::created(function ($example) {
             if (! $example->joined_at) {

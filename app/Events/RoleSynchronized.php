@@ -12,6 +12,9 @@ class RoleSynchronized
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /** @var App\Models\Hierarchy\Role */
+    public $role;
+
     /**
      * Create a new event instance.
      *
@@ -19,7 +22,8 @@ class RoleSynchronized
      */
     public function __construct(Role $role)
     {
-        //
+        // Updated Role updated_at value
+        $role->save();
     }
 
     /**

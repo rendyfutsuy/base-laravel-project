@@ -12,6 +12,9 @@ class UserUpdated
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
+    /** @var \App\Models\User */
+    public $user;
+
     /**
      * Create a new event instance.
      *
@@ -19,7 +22,7 @@ class UserUpdated
      */
     public function __construct(User $user)
     {
-        //
+        $this->user = $user;
     }
 
     /**
