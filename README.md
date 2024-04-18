@@ -77,4 +77,4 @@ in case there an error for `code indexi`, we can fix it with this also re-run al
 
 </table>
 
-©2022 Rendy Anggara. ALL RIGHT RESERVED.
+©2022 Besar Kecil Group. ALL RIGHT RESERVED.
