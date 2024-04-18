@@ -64,7 +64,6 @@ class HelperTest extends TestCase
     public function mask_mail_can_hide_some_part_of_your_email()
     {
         $this->assertEquals('ren************@gma******', mask_email('rendy.anggara@gmail.com'));
-        $this->assertEquals('ren************@rok********', mask_email('rendy.anggara@roketin.com'));
     }
 
     /** @test */

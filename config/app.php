@@ -1,5 +1,7 @@
 <?php
 
+use Modules\Notification\Providers\NotificationServiceProvider as ModuleNotificationServiceProvider;
+
 return [
     /*
     |--------------------------------------------------------------------------
@@ -8,7 +10,7 @@ return [
     |
     */
 
-    'version' => 'v0.0 - beta',
+    'version' => 'v10.0',
 
 
     /*
@@ -52,15 +54,6 @@ return [
 
     /*
     |--------------------------------------------------------------------------
-    | Google Map Secret KEY
-    |--------------------------------------------------------------------------
-    |
-    */
-
-    'gmap_key' => env('GOOGLE_MAPS_KEY'),
-
-    /*
-    |--------------------------------------------------------------------------
     | Application URL
     |--------------------------------------------------------------------------
     |
@@ -73,6 +66,8 @@ return [
     'url' => env('APP_URL', 'http://localhost'),
 
     'asset_url' => env('ASSET_URL', null),
+
+    'contact_url' => env('CONTACT_URL', null),
 
     /*
     |--------------------------------------------------------------------------
@@ -195,6 +190,16 @@ return [
         App\Providers\RouteServiceProvider::class,
         App\Providers\RepositoryServiceProvider::class,
         Spatie\Permission\PermissionServiceProvider::class,
+
+        /*
+         * Module Service Providers 
+         */
+        Modules\Authentication\Providers\AuthenticationServiceProvider::class,
+        Modules\Hierarchy\Providers\HierarchyServiceProvider::class,
+        Modules\Location\Providers\LocationServiceProvider::class,
+        Modules\Time\Providers\TimeServiceProvider::class,
+        Modules\UserManagement\Providers\UserManagementServiceProvider::class,
+        ModuleNotificationServiceProvider::class,
     ],
 
     /*

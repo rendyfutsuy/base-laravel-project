@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Events\UserStored;
-use App\Events\UserUpdated;
+use Modules\UserManagement\Events\UserStored;
+use Modules\UserManagement\Events\UserUpdated;
 use Illuminate\Http\Request;
-use App\Events\UserDestroyed;
+use Modules\UserManagement\Events\UserDestroyed;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Http\Services\Traits\ResultResponse;
-use App\Http\Resources\UserResourceCollection;
-use App\Http\Repositories\Contracts\SuperadminContract;
+use Modules\Authentication\Http\Resources\UserResource;
+use Modules\Authentication\Http\Resources\UserResourceCollection;
+use Modules\Authentication\Http\Repositories\Contracts\SuperadminContract;
 
 class SuperadminController extends Controller
 {

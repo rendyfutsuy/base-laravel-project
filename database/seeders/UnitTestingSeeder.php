@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Hierarchy\Database\Seeders\RolesSeeder;
+use Modules\Hierarchy\Database\Seeders\PermissionsSeeder;
 
 class UnitTestingSeeder extends Seeder
 {
@@ -17,7 +19,6 @@ class UnitTestingSeeder extends Seeder
         // In Any Situation do not run this Seeder as Production or Staging
 
         $this->call([
-            ExampleSeeder::class,
             RolesSeeder::class,
             PermissionsSeeder::class,
         ]);

@@ -25,17 +25,8 @@ class MakeRepository extends Command
      *
      * @var string
      */
-    protected $description = 'Make Repository and Contract with ROKETIN Project Standard';
+    protected $description = 'Make Repository and Contract with Besar Kecil Project Standard';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.

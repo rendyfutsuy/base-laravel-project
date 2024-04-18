@@ -6,7 +6,7 @@ use App\Models\User;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Database\Eloquent\Model;
 use App\Http\Repositories\Contracts\UserContract;
-use Spatie\Permission\Models\Role;
+use Modules\Hierarchy\Models\Role;
 
 class UserRepository extends BaseRepository implements UserContract
 {
@@ -55,7 +55,7 @@ class UserRepository extends BaseRepository implements UserContract
     {
         $fillables = [];
 
-        if (count($attributes) == 0) {
+        if (empty($attributes)) {
             return;
         }
 

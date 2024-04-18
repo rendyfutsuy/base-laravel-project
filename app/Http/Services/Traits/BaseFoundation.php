@@ -4,6 +4,7 @@ namespace App\Http\Services\Traits;
 
 use RuntimeException;
 use Illuminate\Support\Str;
+use App\Exceptions\SearchPipelineException;
 use Illuminate\Contracts\Container\Container as Laravel;
 
 trait BaseFoundation
@@ -60,7 +61,7 @@ trait BaseFoundation
     protected function getLaravel()
     {
         if (! $this->laravel) {
-            throw new RuntimeException('Laravel container instance has not been passed to the Pipeline.');
+            throw new SearchPipelineException('Laravel container instance has not been passed to the Pipeline.');
         }
 
         return $this->laravel;

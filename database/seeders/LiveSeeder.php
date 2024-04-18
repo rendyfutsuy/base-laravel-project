@@ -3,6 +3,8 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Modules\Hierarchy\Database\Seeders\RolesSeeder;
+use Modules\Hierarchy\Database\Seeders\PermissionsSeeder;
 
 class LiveSeeder extends Seeder
 {
