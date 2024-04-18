@@ -107,4 +107,5 @@ return [
         ],
     ],
 
+    'app_logo' => env('APP_LOGO_URL'),
 ];

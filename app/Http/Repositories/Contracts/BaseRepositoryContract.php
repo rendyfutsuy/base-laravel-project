@@ -11,16 +11,10 @@ interface BaseRepositoryContract
 
     public function find($id): Model;
 
-    /**
-     * @return Model
-     */
     public function findByCriteria(array $criteria): ?Model;
 
     public function getByCriteria(array $criteria): Collection;
 
-    /**
-     * @return Model
-     */
     public function store(array $attributes): ?Model;
 
     /**

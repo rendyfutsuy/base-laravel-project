@@ -19,17 +19,9 @@ class LocalTest extends Command
      *
      * @var string
      */
-    protected $description = 'Re-run All Dependencies, Run All Unit Test, Run Pint can also Run Code Fix through Pint.';
-
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
+    protected $description = 'Run composer install,
+    yarn install, php artisan migrate:fresh,
+    php artisan db:seed --class=UnitTestingSeeder';
 
     /**
      * Execute the console command.
@@ -40,6 +32,10 @@ class LocalTest extends Command
     {
         exec('composer install');
         $this->info('Composer Dependencies Successfully Added <3');
+
+        exec('php artisan optimize:clear');
+        $this->info('Clear previous config and load new config.. <3');
+
         $filepath = __DIR__.'/../../../vendor/bin/pint';
 
         $code = null;
@@ -49,7 +45,7 @@ class LocalTest extends Command
         } else {
             exec($filepath.' --test', $outputs, $code);
         }
-        
+
         if ($code == 1) {
             foreach ($outputs as $output) {
                 $this->error($output);
@@ -61,9 +57,9 @@ class LocalTest extends Command
             }
             $this->info('Pint Testing Initiated <3');
         }
-        
+
         try {
-            $result = exec('php artisan migrate:fresh --env=testing');
+            $result = shell_exec('php artisan migrate:fresh --env=testing');
             $this->info($result);
             $this->info('Migrations Successfully Executed <3');
         } catch (\Throwable $th) {
@@ -74,16 +70,23 @@ class LocalTest extends Command
         }
 
         if (! File::exists('storage\oauth-private.key')) {
-            $result = exec('php artisan passport:key');
+            // Since Using Passport UUID Type,
+            // we have to use command below to generate passport key
+            $result = exec('php artisan passport:install --uuids --force -n');
             $this->info($result);
             $this->info('Passport Key Generated <3');
         }
 
-        exec('php artisan db:seed --env=testing --class=UnitTestingSeeder');
+        $result = shell_exec('php artisan db:seed --env=testing --class=UnitTestingSeeder');
+        $this->info($result);
         $this->info('Seeder Successfully Added <3');
 
+        $result = shell_exec('php artisan optimize:clear');
+        $this->info($result);
+        $this->info('Environment has been Optimize <3');
+
         try {
-            $result = shell_exec('php artisan test --stop-on-failure');
+            $result = shell_exec('php artisan test --stop-on-failure --stop-on-risky --log-junit storage/logs/testing/tests.xml');
             $this->info($result);
             $this->info('All Test Passed <3');
         } catch (\Throwable $th) {

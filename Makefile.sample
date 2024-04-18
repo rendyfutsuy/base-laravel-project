@@ -1,0 +1,48 @@
+# Please Set below variables according to your container platform service name
+# If you use docker compose as container platform,
+# please set CONTAINER_PLATFORM:=docker compose
+
+# If you use podman-compose as container platform,
+# please set CONTAINER_PLATFORM:=podman-compose
+CONTAINER_PLATFORM:=docker-compose
+
+# Please Set below variables according to your project service name
+# Based on container compose's service name
+SERVICE_NAME:=app-php-base
+
+# Please Set below variables according to your project container compose file
+CONTAINER_COMPOSE_FILE:=docker-compose.yaml
+
+# Commands Below are used to operate the container with default compose file
+
+# Start the container with default compose file
+start-project:
+	$(CONTAINER_PLATFORM) up -d
+# Build the container with default compose file
+build-project:
+	$(CONTAINER_PLATFORM) up -d --build
+# Restart the container with default compose file
+restart-project:
+	$(CONTAINER_PLATFORM) restart
+# Stop the container with default compose file
+stop-project:
+	$(CONTAINER_PLATFORM) down
+
+# Commands Below are used to operate the container with local compose file
+
+# Start the container with local compose file
+start-local-project:
+	$(CONTAINER_PLATFORM) -f $(CONTAINER_COMPOSE_FILE) up -d
+# Build the container with local compose file
+build-local-project:
+	$(CONTAINER_PLATFORM) -f $(CONTAINER_COMPOSE_FILE) up -d --build
+# Restart the container with local compose file
+restart-local-project:
+	$(CONTAINER_PLATFORM) -f $(CONTAINER_COMPOSE_FILE) restart
+# Stop the container with local compose file
+stop-local-project:
+	$(CONTAINER_PLATFORM) -f $(CONTAINER_COMPOSE_FILE) down
+
+# Accessing Container Shell
+access-project:
+	$(CONTAINER_PLATFORM) -f $(CONTAINER_COMPOSE_FILE) exec -it $(SERVICE_NAME) bash

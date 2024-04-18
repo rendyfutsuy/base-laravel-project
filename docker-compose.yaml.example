@@ -1,0 +1,48 @@
+version: '3.8'
+
+networks:
+  app-net:
+    driver: bridge
+
+volumes:
+  app-datastore:
+
+services:
+  app-mysqldb:
+    container_name: app-mysqldb
+    restart : unless-stopped
+    image: mysql:latest
+    networks:
+      - app-net
+    environment:
+      MYSQL_ROOT_PASSWORD: R1s3xSwZ^jjp3^7CTy
+      MYSQL_DATABASE:       app
+    volumes:
+      - app-datastore:/var/lib/mysql:rw
+
+  app-php:
+    build:
+      context: ./
+    container_name: app-php
+    restart : unless-stopped
+    image: app-php:latest
+    env_file:
+      - ./.env
+    networks:
+      - app-net
+    working_dir: /var/www/html/app
+    volumes:
+      - ./:/var/www/html/app
+
+  app-web:
+    image: nginx:latest
+    container_name: app-web
+    restart: unless-stopped
+    networks:
+      - app-net
+    ports:
+      - 8086:80
+    volumes:
+      - ./public:/var/www/html/app/public
+      - ./nginx/app.conf.local:/etc/nginx/conf.d/default.conf
+      - ./nginx/log/:/var/log/nginx/:rw

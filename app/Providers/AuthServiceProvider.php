@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use Laravel\Passport\Passport;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 
 class AuthServiceProvider extends ServiceProvider
@@ -24,6 +25,9 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        $tokenExpirationSecond = (int) config('auth.access_token_expiration_second');
+        $refreshTokenExpirationDay = (int) config('auth.access_token_refresh_expiration_day');
+        Passport::tokensExpireIn(now()->addSeconds($tokenExpirationSecond));
+        Passport::refreshTokensExpireIn(now()->addDays($refreshTokenExpirationDay));
     }
 }

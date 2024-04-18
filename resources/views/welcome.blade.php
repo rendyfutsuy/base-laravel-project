@@ -92,13 +92,11 @@
 
             <div class="content">
                 <div class="title m-b-md">
-                    My Base Template
+                    Laravel Base Template
                 </div>
 
                 <div class="links">
-                    <a href="/api/documentation">Documentations</a>
-                    <a href="https://github.com/rendyfutsuy/base-laravel-project">GitHub</a>
-                    <a href="https://github.com/rendyfutsuy">Creator</a>
+                    <!--  -->
                 </div>
             </div>
         </div>

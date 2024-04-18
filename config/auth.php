@@ -101,7 +101,7 @@ return [
         ],
     ],
 
-    /*
+/*
     |--------------------------------------------------------------------------
     | Password Confirmation Timeout
     |--------------------------------------------------------------------------
@@ -113,5 +113,8 @@ return [
     */
 
     'password_timeout' => 10800,
+
+    'access_token_expiration_second' => env('ACCESS_TOKEN_EXPIRATION_SECOND', 3600),
+    'access_token_refresh_expiration_day' => env('ACCESS_TOKEN_REFRESH_EXPIRATION_DAY', 365),
 
 ];

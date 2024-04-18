@@ -2,16 +2,16 @@
 
 namespace App\Http\Controllers\Superadmin;
 
-use App\Events\UserStored;
-use App\Events\UserUpdated;
+use Modules\UserManagement\Events\UserStored;
+use Modules\UserManagement\Events\UserUpdated;
 use Illuminate\Http\Request;
-use App\Events\UserDestroyed;
+use Modules\UserManagement\Events\UserDestroyed;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Http\Resources\UserResource;
 use App\Http\Services\Traits\ResultResponse;
-use App\Http\Resources\UserResourceCollection;
-use App\Http\Repositories\Contracts\UserContract;
+use Modules\Authentication\Http\Resources\UserResource;
+use Modules\Authentication\Http\Resources\UserResourceCollection;
+use Modules\Authentication\Http\Repositories\Contracts\UserContract;
 
 class UserController extends Controller
 {
@@ -77,13 +77,17 @@ class UserController extends Controller
             return $this->resultResponse('failed', 'Requested User have wrong Role', 400);
         }
 
+        $userBefore = $this->user->find($id)->toArray() ?? [];
+
         $user = DB::transaction(function () use ($request, $id) {
             $this->user->update($request->all(), $id);
 
             return $this->user->find($id);
         });
 
-        event('user.updated', new UserUpdated($user));
+        $userAfter = $user->toArray() ?? [];
+
+        event('user.updated', new UserUpdated($user, $userBefore, $userAfter));
 
         return (new UserResource($user))->response()->setStatusCode(200);
     }

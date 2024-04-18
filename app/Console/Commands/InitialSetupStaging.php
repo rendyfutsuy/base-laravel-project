@@ -21,15 +21,6 @@ class InitialSetupStaging extends Command
      */
     protected $description = 'Run all Dependencies, prepare database migration and seeder for staging database, generate auth and finally compile Dependencies';
 
-    /**
-     * Create a new command instance.
-     *
-     * @return void
-     */
-    public function __construct()
-    {
-        parent::__construct();
-    }
 
     /**
      * Execute the console command.
@@ -66,8 +57,6 @@ class InitialSetupStaging extends Command
         } catch (\Throwable $th) {
             $this->error('there\'s something wrong with database. check if the database is exists or not');
             throw $th;
-
-            return 0;
         }
 
         if (! File::exists('storage\oauth-private.key')) {
