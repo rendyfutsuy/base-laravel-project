@@ -35,6 +35,7 @@ class OTPServices
 
             $this->userRepository->update([
                 'email_verified_at' => Carbon::now(),
+                'is_active' => true,
             ], $userId);
         });
     }

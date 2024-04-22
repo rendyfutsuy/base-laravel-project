@@ -31,6 +31,24 @@ class AuthTest extends TestCase
     }
 
     /** @test */
+    public function user_cannot_login_with_un_validated_email()
+    {
+        $response = $this->postJson(route('api.authentication.login'),
+            $this->credential('invalid.email@mailinator.com', '12345'));
+
+        $response->assertStatus(400);
+    }
+
+    /** @test */
+    public function user_cannot_login_with_if_inactive()
+    {
+        $response = $this->postJson(route('api.authentication.login'),
+            $this->credential('non-active@mailinator.com', '12345'));
+
+        $response->assertStatus(400);
+    }
+
+    /** @test */
     public function user_cannot_login_with_invalid_email()
     {
         $response = $this->postJson(route('api.authentication.login'),

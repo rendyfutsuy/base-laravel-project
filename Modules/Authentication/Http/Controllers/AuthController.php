@@ -8,10 +8,10 @@ use Illuminate\Http\Request;
 use App\Helpers\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
-use Illuminate\Support\Facades\Auth;
 use App\Http\Requests\AuthLoginRequest;
 use Laravel\Passport\RefreshTokenRepository;
 use Modules\Authentication\Http\Resources\AuthResource;
+use Modules\Authentication\Http\Services\AuthenticationService;
 use Modules\Authentication\Http\Services\Traits\RefreshTokenTrait;
 use Modules\Authentication\Http\Repositories\Contracts\OTPContract;
 use Modules\Authentication\Http\Repositories\Contracts\UserContract;
@@ -27,32 +27,37 @@ class AuthController extends Controller
 
     private $otpRepository;
 
+    private $auth;
+
     public function __construct(
         RefreshTokenRepository $refreshToken,
         UserContract $userRepository,
         OTPContract $otpRepository,
-
+        AuthenticationService $auth
     ) {
         $this->clientRefreshToken = $refreshToken;
         $this->userRepository = $userRepository;
         $this->otpRepository = $otpRepository;
+        $this->auth = $auth;
     }
 
     public function login(AuthLoginRequest $request)
     {
-        $credentials = $request->only(['email', 'password']);
-
-        if (Auth::attempt($credentials)) {
-            return new AuthResource(auth()->user());
+        try {
+            $credential = $this->auth->login($request->only(['email', 'password']));
+        } catch (\Throwable $th) {
+            return $this->resultResponse('failed', $th->getMessage(), 400);
         }
 
-        return $this->resultResponse('failed', 'Email or PIN is Wrong', 400);
+        return new AuthResource($credential);
     }
 
     public function logout()
     {
-        if (Auth::check()) {
-            Auth::user()->tokens()->delete();
+        try {
+            $this->auth->logout();
+        } catch (\Throwable $th) {
+            return $this->resultResponse('success', $th->getMessage(), 400);
         }
 
         return $this->resultResponse('success', 'Email Successfully Logout', 200);
