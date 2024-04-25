@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Hierarchy\Database\Seeders\RolesSeeder;
 use Modules\Hierarchy\Database\Seeders\PermissionsSeeder;
+use Modules\Mobile\Database\Seeders\MobilePermissionsSeeder;
 
 class UnitTestingSeeder extends Seeder
 {
@@ -21,6 +22,7 @@ class UnitTestingSeeder extends Seeder
         $this->call([
             RolesSeeder::class,
             PermissionsSeeder::class,
+            MobilePermissionsSeeder::class,
         ]);
 
         // If developer want to add another Seeder for Unit Testing purpose.

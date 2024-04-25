@@ -5,7 +5,7 @@ use Modules\UserManagement\Http\Controllers\SuperadminController;
 
 /*
 |--------------------------------------------------------------------------
-| WEB Admin Routes
+| Mobile Routing for User Management Module
 |--------------------------------------------------------------------------
 |
 */
@@ -13,21 +13,21 @@ use Modules\UserManagement\Http\Controllers\SuperadminController;
 Route::prefix('superadmins')->middleware('auth:api')->group(function () {
     Route::get('/', [SuperadminController::class, 'index'])
         ->middleware('permission')
-        ->name('api.user-management.superadmin.index');
+        ->name('api.user-management.mobile.superadmin.index');
 
     Route::get('/{id}', [SuperadminController::class, 'show'])
         ->middleware('permission')
-        ->name('api.user-management.superadmin.show');
+        ->name('api.user-management.mobile.superadmin.show');
 
     Route::put('/{id}', [SuperadminController::class, 'update'])
         ->middleware('permission')
-        ->name('api.user-management.superadmin.update');
+        ->name('api.user-management.mobile.superadmin.update');
 
     Route::delete('/{id}', [SuperadminController::class, 'destroy'])
         ->middleware('permission')
-        ->name('api.user-management.superadmin.destroy');
+        ->name('api.user-management.mobile.superadmin.destroy');
 
     Route::post('/', [SuperadminController::class, 'store'])
         ->middleware('permission')
-        ->name('api.user-management.superadmin.store');
+        ->name('api.user-management.mobile.superadmin.store');
 });

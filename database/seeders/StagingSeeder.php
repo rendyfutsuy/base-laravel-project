@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Modules\Hierarchy\Database\Seeders\RolesSeeder;
 use Modules\Hierarchy\Database\Seeders\PermissionsSeeder;
+use Modules\Mobile\Database\Seeders\MobilePermissionsSeeder;
 
 class StagingSeeder extends Seeder
 {
@@ -22,6 +23,7 @@ class StagingSeeder extends Seeder
             ExampleSeeder::class,
             RolesSeeder::class,
             PermissionsSeeder::class,
+            MobilePermissionsSeeder::class,
         ]);
 
         // If developer want to add another Seeder for Unit Testing purpose.

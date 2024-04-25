@@ -2,12 +2,13 @@
 
 namespace Modules\UserManagement\Http\Controllers;
 
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Http\Services\Traits\ResultResponse;
 use Modules\UserManagement\Events\UserStored;
 use Modules\UserManagement\Events\UserUpdated;
-use Illuminate\Http\Request;
 use Modules\UserManagement\Events\UserDestroyed;
-use Illuminate\Support\Facades\DB;
-use Modules\UserManagement\Http\Services\Traits\ResultResponse;
 use Modules\Authentication\Http\Resources\UserResource;
 use Modules\Authentication\Http\Resources\UserResourceCollection;
 use Modules\Authentication\Http\Repositories\Contracts\SuperadminContract;

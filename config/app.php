@@ -200,6 +200,7 @@ return [
         Modules\Time\Providers\TimeServiceProvider::class,
         Modules\UserManagement\Providers\UserManagementServiceProvider::class,
         ModuleNotificationServiceProvider::class,
+        Modules\Mobile\Providers\MobileServiceProvider::class,
     ],
 
     /*
