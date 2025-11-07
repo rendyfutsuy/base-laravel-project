@@ -25,9 +25,26 @@ class UserController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
+     * @group User Management
+     * @authenticated
+     * 
+     * Get paginated list of users.
+     * 
+     * @queryParam page integer Page number. Example: 1
+     * @queryParam per_page integer Items per page. Example: 10
+     * 
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": "user-id-123",
+     *       "name": "John Doe",
+     *       "email": "user@example.com",
+     *       "roles": []
+     *     }
+     *   ],
+     *   "links": {...},
+     *   "meta": {...}
+     * }
      */
     public function index()
     {
@@ -37,9 +54,21 @@ class UserController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
-     *
-     * @return \Illuminate\Http\Response
+     * @group User Management
+     * @authenticated
+     * 
+     * Create a new user.
+     * 
+     * @bodyParam name string required The user's full name. Example: John Doe
+     * @bodyParam email string required The user's email address. Example: user@example.com
+     * @bodyParam password string required The user's password. Example: password123
+     * 
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "John Doe",
+     *   "email": "user@example.com",
+     *   "roles": []
+     * }
      */
     public function store(Request $request)
     {
@@ -53,10 +82,19 @@ class UserController extends Controller
     }
 
     /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @group User Management
+     * @authenticated
+     * 
+     * Get user details by ID.
+     * 
+     * @urlParam id string required The user ID. Example: user-id-123
+     * 
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "John Doe",
+     *   "email": "user@example.com",
+     *   "roles": []
+     * }
      */
     public function show($id)
     {
@@ -66,10 +104,27 @@ class UserController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @group User Management
+     * @authenticated
+     * 
+     * Update user information.
+     * 
+     * @urlParam id string required The user ID. Example: user-id-123
+     * @bodyParam name string The user's name. Example: Jane Doe
+     * @bodyParam email string The user's email address. Example: jane@example.com
+     * @bodyParam password string The user's password. Example: newpassword123
+     * 
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "Jane Doe",
+     *   "email": "jane@example.com",
+     *   "roles": []
+     * }
+     * @response 400 {
+     *   "status": "failed",
+     *   "message": "Requested User have wrong Role",
+     *   "status_code": 400
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -93,10 +148,16 @@ class UserController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @group User Management
+     * @authenticated
+     * 
+     * Delete a user.
+     * 
+     * @urlParam id string required The user ID. Example: user-id-123
+     * 
+     * @response 200 {
+     *   "message": "delete user@example.com success"
+     * }
      */
     public function destroy($id)
     {

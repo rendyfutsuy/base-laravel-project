@@ -25,11 +25,29 @@ class RegisterController extends Controller
     }
 
     /**
-     * Register new User to Rendy Terumi with unregistered email and password.
-     * also send verification by by email. so user can verify their account if the inputted account is real.
-     *
-     * @param  \Modules\RAMv1\Http\Requests\RegisterValidation\RegisterRequest  $resquest
-     * @return \Illuminate\Http\JsonResponse
+     * @group Authentication
+     * 
+     * Register a new user account. An OTP will be sent to the provided email.
+     * 
+     * @bodyParam name string required The user's full name. Example: John Doe
+     * @bodyParam email string required The user's email address. Must be unique. Example: user@example.com
+     * @bodyParam password string required The user's password. Must be at least 8 characters. Example: password123
+     * @bodyParam password_confirmation string required The password confirmation. Must match the password. Example: password123
+     * 
+     * @response 200 {
+     *   "status": "success",
+     *   "message": "Successfully Send OTP",
+     *   "status_code": 200,
+     *   "data": {
+     *     "otp_token": "otp-token-123"
+     *   }
+     * }
+     * @response 400 {
+     *   "errors": [
+     *     "The email has already been taken.",
+     *     "The password confirmation does not match."
+     *   ]
+     * }
      */
     public function register(RegisterRequest $request)
     {
