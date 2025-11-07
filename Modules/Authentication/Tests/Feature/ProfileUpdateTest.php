@@ -2,21 +2,40 @@
 
 namespace Tests\Feature\Profile;
 
-use Tests\Feature\Components\AuthCase;
+use Mockery;
+use Laravel\Passport\Passport;
+use Tests\Feature\Components\MockAuthHelper;
 use Tests\TestCase;
 
 class ProfileUpdateTest extends TestCase
 {
-    use AuthCase;
+    use MockAuthHelper;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     /** @test */
     public function superadmin_can_update_their_profile()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.authentication.profile.update']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.authentication.profile.update'), [
+        // Use Passport::actingAs for authentication
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.authentication.profile.update'), [
             'name' => 'My Name',
             'email' => 'superadmin@mailinator.com',
         ]);
@@ -27,11 +46,16 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function superadmin_can_update_their_password()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.authentication.profile.password']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.authentication.profile.password'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.authentication.profile.password'), [
             'password' => '12345',
         ]);
 
@@ -41,11 +65,11 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function superadmin_can_see_their_profile()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser('superadmin@mailinator.com', 'Superadmin', 'user-id-123');
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.authentication.profile.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.authentication.profile.index'));
 
         $response->assertOk();
     }
@@ -53,11 +77,16 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function user_can_update_their_profile()
     {
-        $currentUser = $this->login('user@mailinator.com');
+        $userMock = $this->mockUser(
+            'user@mailinator.com',
+            'User',
+            'user-id-456',
+            ['api.authentication.profile.update']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.authentication.profile.update'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.authentication.profile.update'), [
             'name' => 'My Name',
             'email' => 'user@mailinator.com',
         ]);
@@ -68,11 +97,16 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function user_can_update_their_password()
     {
-        $currentUser = $this->login('user@mailinator.com');
+        $userMock = $this->mockUser(
+            'user@mailinator.com',
+            'User',
+            'user-id-456',
+            ['api.authentication.profile.password']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.authentication.profile.password'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.authentication.profile.password'), [
             'password' => '12345',
         ]);
 
@@ -82,11 +116,11 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function user_can_see_their_profile()
     {
-        $currentUser = $this->login('user@mailinator.com');
+        $userMock = $this->mockUser('user@mailinator.com', 'User', 'user-id-456');
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.authentication.profile.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.authentication.profile.index'));
 
         $response->assertOk();
     }
@@ -94,11 +128,16 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function staff_can_update_their_profile()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'user-id-789',
+            ['api.authentication.profile.update']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.authentication.profile.update'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.authentication.profile.update'), [
             'name' => 'My Name',
             'email' => 'staff@mailinator.com',
         ]);
@@ -109,11 +148,16 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function staff_can_update_their_password()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'user-id-789',
+            ['api.authentication.profile.password']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.authentication.profile.password'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.authentication.profile.password'), [
             'password' => '12345',
         ]);
 
@@ -123,11 +167,11 @@ class ProfileUpdateTest extends TestCase
     /** @test */
     public function staff_can_see_their_profile()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser('staff@mailinator.com', 'Staff', 'user-id-789');
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.authentication.profile.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.authentication.profile.index'));
 
         $response->assertOk();
     }

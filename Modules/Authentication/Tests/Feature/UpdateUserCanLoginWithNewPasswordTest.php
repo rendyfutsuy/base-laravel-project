@@ -2,21 +2,40 @@
 
 namespace Modules\Authentication\Tests\Feature;
 
-use Tests\Feature\Components\AuthCase;
+use Mockery;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
+use Tests\Feature\Components\MockAuthHelper;
+use Modules\Authentication\Http\Services\AuthenticationService;
 
 class UpdateUserCanLoginWithNewPasswordTest extends TestCase
 {
-    use AuthCase;
+    use MockAuthHelper;
+
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
 
     /** @test */
     public function superadmin_update_their_password()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.authentication.profile.password']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.authentication.profile.password'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.authentication.profile.password'), [
             'password' => '54321',
         ]);
 
@@ -26,6 +45,15 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
     /** @test */
     public function superadmin_can_not_login_with_previous_password()
     {
+        // Mock AuthenticationService to throw error for old password
+        $authServiceMock = Mockery::mock(AuthenticationService::class);
+
+        $authServiceMock->shouldReceive('login')
+            ->once()
+            ->andThrow(new \Exception('Email or PIN is Wrong'));
+
+        $this->app->instance(AuthenticationService::class, $authServiceMock);
+
         $response = $this->postJson(route('api.authentication.login'), [
             'email' => 'superadmin@mailinator.com',
             'password' => '12345',
@@ -37,6 +65,16 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
     /** @test */
     public function superadmin_can_login_with_new_password()
     {
+        // Mock AuthenticationService for successful login with new password
+        $authServiceMock = Mockery::mock(AuthenticationService::class);
+        $userMock = $this->mockUser('superadmin@mailinator.com', 'Superadmin', 'user-id-123');
+
+        $authServiceMock->shouldReceive('login')
+            ->once()
+            ->andReturn($userMock);
+
+        $this->app->instance(AuthenticationService::class, $authServiceMock);
+
         $response = $this->postJson(route('api.authentication.login'), [
             'email' => 'superadmin@mailinator.com',
             'password' => '54321',

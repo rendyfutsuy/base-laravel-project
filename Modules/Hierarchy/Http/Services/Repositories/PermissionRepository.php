@@ -4,6 +4,7 @@ namespace Modules\Hierarchy\Http\Services\Repositories;
 
 use App\Models\User;
 use Modules\Hierarchy\Models\Role;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Hierarchy\Models\Permission;
 use App\Http\Repositories\BaseRepository;
@@ -58,5 +59,10 @@ class PermissionRepository extends BaseRepository implements PermissionContract
         ));
 
         return $permission->refresh();
+    }
+
+    public function getUsersByIds(array $userIds): Collection
+    {
+        return User::whereIn('id', $userIds)->get();
     }
 }

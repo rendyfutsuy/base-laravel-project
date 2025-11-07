@@ -2,7 +2,6 @@
 
 namespace Modules\Hierarchy\Http\Controllers;
 
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -87,7 +86,7 @@ class PermissionController extends Controller
     public function resyncToUser(PermissionsSynchroUsers $request, Permission $permission)
     {
         return DB::transaction(function () use ($request, $permission) {
-            $users = User::whereIn('id', $request->users)->get();
+            $users = $this->permission->getUsersByIds($request->users);
 
             foreach ($users as $user) {
                 $this->permission->resyncToUser($user, $permission);
