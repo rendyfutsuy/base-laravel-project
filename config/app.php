@@ -10,7 +10,7 @@ return [
     |
     */
 
-    'version' => 'v10.0',
+    'version' => 'v12.0',
 
 
     /*

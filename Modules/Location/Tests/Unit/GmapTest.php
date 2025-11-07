@@ -23,7 +23,7 @@ class GmapTest extends TestCase
     public function gmap_key_must_set()
     {
         config('location.gmap_key', null);
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals($location['status'], 'fail');
@@ -36,7 +36,7 @@ class GmapTest extends TestCase
     {
         $this->mockLocation();
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals(
@@ -48,7 +48,7 @@ class GmapTest extends TestCase
     /** @test */
     public function gmap_can_not_be_use_if_coordinate_not_filled()
     {
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find(null);
 
         $this->assertEquals('fail', $location['status']);
@@ -60,7 +60,7 @@ class GmapTest extends TestCase
         $previousKey = Config::get('app.gmap_key');
         Config::set('app.gmap_key', null);
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals('fail', $location['status']);
@@ -73,7 +73,7 @@ class GmapTest extends TestCase
     {
         $this->mockLocationToFail();
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024');
 
         $this->assertEquals('fail', $location['status']);

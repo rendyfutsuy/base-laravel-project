@@ -109,7 +109,7 @@ class MobilePermissionsSeeder extends Seeder
 
         $normalUser->syncPermissions($normalUserPermissionAPI);
 
-        //sync All Permission for Staff User Mobile Permissions
+        // sync All Permission for Staff User Mobile Permissions
         $staffUser = Role::findByName('STAFF', 'api');
 
         $staffUserPermissions = $staffUser->permissions->pluck('name')->toArray();
@@ -118,7 +118,7 @@ class MobilePermissionsSeeder extends Seeder
 
         $staffUser->syncPermissions($staffPermissionAPI);
 
-        //sync All Permission for Super Admin User Mobile Permissions
+        // sync All Permission for Super Admin User Mobile Permissions
         $superAdminUser = Role::findByName('SUPER_ADMIN', 'api');
 
         $superAdminUserPermissions = $superAdminUser->permissions->pluck('name')->toArray();

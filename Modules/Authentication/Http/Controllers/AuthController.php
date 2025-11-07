@@ -9,7 +9,6 @@ use App\Helpers\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AuthLoginRequest;
-use Laravel\Passport\RefreshTokenRepository;
 use Modules\Authentication\Http\Resources\AuthResource;
 use Modules\Authentication\Http\Services\AuthenticationService;
 use Modules\Authentication\Http\Services\Traits\RefreshTokenTrait;
@@ -21,8 +20,6 @@ class AuthController extends Controller
 {
     use ApiResponseTrait, RefreshTokenTrait;
 
-    private $clientRefreshToken;
-
     private $userRepository;
 
     private $otpRepository;
@@ -30,12 +27,10 @@ class AuthController extends Controller
     private $auth;
 
     public function __construct(
-        RefreshTokenRepository $refreshToken,
         UserContract $userRepository,
         OTPContract $otpRepository,
         AuthenticationService $auth
     ) {
-        $this->clientRefreshToken = $refreshToken;
         $this->userRepository = $userRepository;
         $this->otpRepository = $otpRepository;
         $this->auth = $auth;

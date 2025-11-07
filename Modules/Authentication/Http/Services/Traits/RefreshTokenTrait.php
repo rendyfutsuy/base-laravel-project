@@ -48,14 +48,14 @@ trait RefreshTokenTrait
         $tokens = $user->tokens;
 
         foreach ($tokens as $token) {
-            $this->clientRefreshToken->revokeRefreshTokensByAccessTokenId($token->id);
+            Passport::refreshToken()->where('access_token_id', $token->id)->update(['revoked' => true]);
             $token->revoke();
         }
     }
 
     protected function revokeToken($refreshToken)
     {
-        $this->clientRefreshToken->revokeRefreshToken($refreshToken);
+        Passport::refreshToken()->where('id', $refreshToken)->update(['revoked' => true]);
     }
 
     protected function revokeCurrentRefreshToken($refreshToken)
