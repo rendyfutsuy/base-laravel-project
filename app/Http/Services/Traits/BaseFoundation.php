@@ -33,7 +33,7 @@ trait BaseFoundation
     }
 
     /**
-     * change class to string to Builder Object
+     * Resolve class identification to Builder Object.
      *
      * @param  class-string  $currentClass
      * @return mixed

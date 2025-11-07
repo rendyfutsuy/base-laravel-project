@@ -83,7 +83,7 @@ class AuthController extends Controller
     }
 
     /**
-     * create new token for new atutentification session by refreshing current user refresh token on Bearer token.
+     * Create new token for new authentication session by refreshing current user refresh token on Bearer token.
      *
      * @return \Illuminate\Http\JsonResponse
      */

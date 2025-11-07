@@ -18,9 +18,12 @@ class NotificationService
 
     public $fcm;
 
-    public function __construct(FCM $fcm)
+    protected $notificationModel;
+
+    public function __construct(FCM $fcm, ?Notification $notificationModel = null)
     {
         $this->fcm = $fcm;
+        $this->notificationModel = $notificationModel ?? new Notification;
     }
 
     public function add(
@@ -47,7 +50,7 @@ class NotificationService
             $params['notifiable_id'] = $model->id;
         }
 
-        $notification = Notification::create($params);
+        $notification = $this->notificationModel::create($params);
 
         return $notification;
     }
