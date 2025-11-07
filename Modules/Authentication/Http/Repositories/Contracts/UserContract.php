@@ -14,4 +14,6 @@ interface UserContract
     public function find($id): User;
 
     public function store(array $attributes): Model;
+
+    public function update(array $attributes, $id);
 }
