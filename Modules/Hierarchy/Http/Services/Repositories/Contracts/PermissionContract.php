@@ -15,4 +15,6 @@ interface PermissionContract
     public function resyncToUser(User $user, Permission $permission): Permission;
 
     public function getUsersByIds(array $userIds): Collection;
+
+    public function getRolesByIds(array $roleIds): Collection;
 }

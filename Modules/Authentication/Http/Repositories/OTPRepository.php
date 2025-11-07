@@ -92,4 +92,24 @@ class OTPRepository extends BaseRepository implements OTPContract
 
         return $this->findByCriteria($columns);
     }
+
+    /**
+     * Get OTP by token
+     *
+     * @param  string  $otpToken
+     * @return \Modules\Authentication\Models\OTP|false
+     */
+    public function getByToken($otpToken)
+    {
+        $otp = $this->model
+            ->where('otp_token', $otpToken)
+            ->where('is_active', true)
+            ->first();
+
+        if (! $otp) {
+            return false;
+        }
+
+        return $otp;
+    }
 }

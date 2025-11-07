@@ -41,13 +41,9 @@ class NotificationController extends Controller
     {
         $notificationId = $request->query('id');
 
-        $notification = $this->notificationRepository->find($notificationId);
+        $updated = $this->notificationRepository->updateRead($notificationId);
 
-        if ($notification) {
-            $notification->update([
-                'is_read' => true,
-            ]);
-
+        if ($updated) {
             return response()->json([
                 'message' => 'Update read sucess',
             ], 200);

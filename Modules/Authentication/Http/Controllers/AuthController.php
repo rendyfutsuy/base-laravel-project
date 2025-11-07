@@ -3,7 +3,6 @@
 namespace Modules\Authentication\Http\Controllers;
 
 use Carbon\Carbon;
-use App\Models\User;
 use Illuminate\Http\Request;
 use App\Helpers\ApiResponseTrait;
 use Illuminate\Http\JsonResponse;

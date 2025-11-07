@@ -25,4 +25,17 @@ class NotificationRepository extends BaseRepository implements NotificationContr
             ->unread()
             ->count();
     }
+
+    public function updateRead($id): bool
+    {
+        $notification = $this->find($id);
+
+        if (! $notification) {
+            return false;
+        }
+
+        return $notification->update([
+            'is_read' => true,
+        ]);
+    }
 }

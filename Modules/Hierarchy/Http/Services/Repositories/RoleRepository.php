@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Http\Services\Repositories;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Modules\Hierarchy\Models\Role;
 use Modules\Hierarchy\Models\Permission;
 use Illuminate\Database\Eloquent\Model;
@@ -30,10 +31,15 @@ class RoleRepository extends BaseRepository implements RoleContract
 
     public function sync($permissions, Role $role): Role
     {
-        $permissions = Permission::whereIn('id', $permissions)->get();
+        $permissions = $this->getPermissionsByIds($permissions);
         $role->syncPermissions($permissions);
 
         return $role->load('permissions')->refresh();
+    }
+
+    public function getPermissionsByIds(array $permissionIds): Collection
+    {
+        return Permission::whereIn('id', $permissionIds)->get();
     }
 
     public function resync(User $user, Role $role): User

@@ -35,6 +35,11 @@ class UserRepository extends BaseRepository implements UserContract
         return $this->user->query()->paginate(request('per_page', 10));
     }
 
+    public function find($id): User
+    {
+        return $this->user->findOrFail($id);
+    }
+
     public function store(array $attributes): Model
     {
         $newUser = $this->user->create([
