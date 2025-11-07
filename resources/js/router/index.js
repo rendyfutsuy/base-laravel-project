@@ -1,0 +1,94 @@
+import Vue from 'vue';
+import VueRouter from 'vue-router';
+import store from '../store';
+
+Vue.use(VueRouter);
+
+const routes = [
+    {
+        path: '/login',
+        name: 'Login',
+        component: () => import('../views/Auth/Login.vue'),
+        meta: { requiresAuth: false },
+    },
+    {
+        path: '/register',
+        name: 'Register',
+        component: () => import('../views/Auth/Register.vue'),
+        meta: { requiresAuth: false },
+    },
+    {
+        path: '/',
+        component: () => import('../layouts/DashboardLayout.vue'),
+        meta: { requiresAuth: true },
+        children: [
+            {
+                path: '',
+                name: 'Dashboard',
+                component: () => import('../views/Dashboard.vue'),
+            },
+            {
+                path: 'profile',
+                name: 'Profile',
+                component: () => import('../views/Auth/Profile.vue'),
+            },
+            {
+                path: 'users',
+                name: 'Users',
+                component: () => import('../views/UserManagement/Users.vue'),
+            },
+            {
+                path: 'staffs',
+                name: 'Staffs',
+                component: () => import('../views/UserManagement/Staffs.vue'),
+            },
+            {
+                path: 'superadmins',
+                name: 'Superadmins',
+                component: () => import('../views/UserManagement/Superadmins.vue'),
+            },
+            {
+                path: 'roles',
+                name: 'Roles',
+                component: () => import('../views/Hierarchy/Roles.vue'),
+            },
+            {
+                path: 'permissions',
+                name: 'Permissions',
+                component: () => import('../views/Hierarchy/Permissions.vue'),
+            },
+            {
+                path: 'notifications',
+                name: 'Notifications',
+                component: () => import('../views/Notifications/Index.vue'),
+            },
+        ],
+    },
+];
+
+const router = new VueRouter({
+    mode: 'history',
+    base: process.env.BASE_URL,
+    routes,
+});
+
+router.beforeEach(async (to, from, next) => {
+    const isAuthenticated = store.getters['auth/isAuthenticated'];
+    
+    // Initialize auth if token exists
+    if (!isAuthenticated && localStorage.getItem('access_token')) {
+        store.dispatch('auth/initAuth');
+        await store.dispatch('auth/fetchProfile');
+    }
+    
+    if (to.meta.requiresAuth && !store.getters['auth/isAuthenticated']) {
+        next({ name: 'Login' });
+    } else if ((to.name === 'Login' || to.name === 'Register') && store.getters['auth/isAuthenticated']) {
+        next({ name: 'Dashboard' });
+    } else {
+        next();
+    }
+});
+
+export default router;
+
