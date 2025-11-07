@@ -20,8 +20,7 @@ class LocalTest extends Command
      * @var string
      */
     protected $description = 'Run composer install,
-    yarn install, php artisan migrate:fresh,
-    php artisan db:seed --class=UnitTestingSeeder';
+    yarn install';
 
     /**
      * Execute the console command.
@@ -58,15 +57,6 @@ class LocalTest extends Command
             $this->info('Pint Testing Initiated <3');
         }
 
-        try {
-            $result = shell_exec('php artisan migrate:fresh --env=testing');
-            $this->info($result);
-            $this->info('Migrations Successfully Executed <3');
-        } catch (\Throwable $th) {
-            $this->error('There\'s something wrong with database. Check if the database exists or not');
-            throw $th;
-        }
-
         if (! File::exists('storage\oauth-private.key')) {
             // Since Using Passport UUID Type,
             // we have to use command below to generate passport key
@@ -74,10 +64,6 @@ class LocalTest extends Command
             $this->info($result);
             $this->info('Passport Key Generated <3');
         }
-
-        $result = shell_exec('php artisan db:seed --env=testing --class=UnitTestingSeeder');
-        $this->info($result);
-        $this->info('Seeder Successfully Added <3');
 
         $result = shell_exec('php artisan optimize:clear');
         $this->info($result);
