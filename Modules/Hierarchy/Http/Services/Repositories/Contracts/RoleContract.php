@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Http\Services\Repositories\Contracts;
 
 use App\Models\User;
+use Illuminate\Support\Collection;
 use Modules\Hierarchy\Models\Role;
 
 interface RoleContract
@@ -12,4 +13,6 @@ interface RoleContract
     public function paginated();
 
     public function resync(User $user, Role $role): User;
+
+    public function getPermissionsByIds(array $permissionIds): Collection;
 }

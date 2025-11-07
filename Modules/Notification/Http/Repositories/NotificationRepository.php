@@ -25,4 +25,22 @@ class NotificationRepository extends BaseRepository implements NotificationContr
             ->unread()
             ->count();
     }
+
+    public function find($id): \Illuminate\Database\Eloquent\Model
+    {
+        return $this->model->findOrFail($id);
+    }
+
+    public function updateRead($id): bool
+    {
+        try {
+            $notification = $this->find($id);
+
+            return $notification->update([
+                'is_read' => true,
+            ]);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }

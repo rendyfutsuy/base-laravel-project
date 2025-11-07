@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use Modules\Notification\Http\Controllers\NotificationController;
+use Modules\Notification\Http\Controllers\FirebaseTokenController;
 
 /*
 |--------------------------------------------------------------------------

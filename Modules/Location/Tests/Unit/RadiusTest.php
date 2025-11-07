@@ -2,6 +2,7 @@
 
 namespace Modules\Location\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 use Modules\Location\Http\Services\Radius;
@@ -18,7 +19,7 @@ class RadiusTest extends TestCase
     |
     */
 
-    /** @test */
+    #[Test]
     public function assert_distance_return_int_if_parameters_valid()
     {
         $service = new Radius;
@@ -39,7 +40,7 @@ class RadiusTest extends TestCase
         $this->assertEquals(0.0, $response);
     }
 
-    /** @test */
+    #[Test]
     public function assert_distance_return_array_if_latitude__target_parameters_is_not_valid()
     {
         $service = new Radius;
@@ -59,7 +60,7 @@ class RadiusTest extends TestCase
         $this->assertIsNotNumeric($response);
     }
 
-    /** @test */
+    #[Test]
     public function assert_distance_return_array_if_longitude__target_parameters_is_not_valid()
     {
         $service = new Radius;
@@ -79,7 +80,7 @@ class RadiusTest extends TestCase
         $this->assertIsNotNumeric($response);
     }
 
-    /** @test */
+    #[Test]
     public function assert_distance_return_array_if_latitude__dynamic_parameters_is_not_valid()
     {
         $service = new Radius;
@@ -99,7 +100,7 @@ class RadiusTest extends TestCase
         $this->assertIsNotNumeric($response);
     }
 
-    /** @test */
+    #[Test]
     public function assert_distance_return_array_if_longitude__dynamic_parameters_is_not_valid()
     {
         $service = new Radius;

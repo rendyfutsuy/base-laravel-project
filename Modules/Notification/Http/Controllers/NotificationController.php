@@ -23,6 +23,35 @@ class NotificationController extends Controller
             ->apply();
     }
 
+    /**
+     * @group Notifications
+     *
+     * @authenticated
+     *
+     * Get paginated list of notifications for authenticated user.
+     *
+     * @queryParam row integer Items per page. Example: 10
+     * @queryParam page integer Page number. Example: 1
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": "notification-id-123",
+     *       "user_id": "user-id-123",
+     *       "title": "New Notification",
+     *       "message": "You have a new notification",
+     *       "type": "info",
+     *       "is_read": false,
+     *       "sent_at": "2024-01-01T00:00:00.000000Z",
+     *       "received_back_at": null,
+     *       "payload": null
+     *     }
+     *   ],
+     *   "links": {...},
+     *   "meta": {...},
+     *   "unread_counter": 5
+     * }
+     */
     public function index(Request $request)
     {
         $row = $request->query('row', 10);
@@ -37,17 +66,29 @@ class NotificationController extends Controller
             ]);
     }
 
+    /**
+     * @group Notifications
+     *
+     * @authenticated
+     *
+     * Mark a notification as read.
+     *
+     * @queryParam id string required The notification ID. Example: notification-id-123
+     *
+     * @response 200 {
+     *   "message": "Update read sucess"
+     * }
+     * @response 400 {
+     *   "message": "No Notification found"
+     * }
+     */
     public function updateRead(Request $request)
     {
         $notificationId = $request->query('id');
 
-        $notification = $this->notificationRepository->find($notificationId);
+        $updated = $this->notificationRepository->updateRead($notificationId);
 
-        if ($notification) {
-            $notification->update([
-                'is_read' => true,
-            ]);
-
+        if ($updated) {
             return response()->json([
                 'message' => 'Update read sucess',
             ], 200);
@@ -58,6 +99,22 @@ class NotificationController extends Controller
         ], 400);
     }
 
+    /**
+     * @group Notifications
+     *
+     * @authenticated
+     *
+     * Delete a notification.
+     *
+     * @queryParam id string required The notification ID. Example: notification-id-123
+     *
+     * @response 200 {
+     *   "message": "Notification deleted"
+     * }
+     * @response 400 {
+     *   "message": "Error message"
+     * }
+     */
     public function delete(Request $request)
     {
         $notificationId = $request->query('id');

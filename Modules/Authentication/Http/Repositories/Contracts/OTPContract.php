@@ -28,4 +28,12 @@ interface OTPContract
      * @return \Modules\RAMv1\Models\OTP
      */
     public function getActive($userId, $code = null);
+
+    /**
+     * Get OTP by token
+     *
+     * @param  string  $otpToken
+     * @return \Modules\Authentication\Models\OTP|false
+     */
+    public function getByToken($otpToken);
 }

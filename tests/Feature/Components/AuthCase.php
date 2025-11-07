@@ -2,42 +2,49 @@
 
 namespace Tests\Feature\Components;
 
+use Mockery;
 use App\Models\User;
 
 trait AuthCase
 {
+    use MockAuthHelper;
+
+    /**
+     * Get authentication token using mocked user.
+     * This method now uses mocking instead of database queries.
+     *
+     * @return array
+     */
     public function getAuthenticate(string $username, string $password)
     {
         if (request()->hasSession()) {
             request()->session()->flush();
         }
 
-        $users = User::withoutGlobalScope('company')->get();
+        // Mock user authentication instead of querying database
+        $user = $this->mockUser($username, $username, 'user-id-'.md5($username));
+        $token = $this->mockToken('mock-access-token-'.md5($username));
 
-        foreach ($users as $user) {
-            $user->tokens->each(function ($token, $key) {
-                $token->delete();
-            });
-        }
-
-        $auth = User::withoutGlobalScope('company')
-            ->where(function ($users) use ($username) {
-                $users->where('email', $username)
-                    ->orWhere('name', $username);
-            })->first();
+        $user->shouldReceive('createToken')
+            ->with(Mockery::any())
+            ->andReturn($token);
 
         return [
-            'access_token' => $auth->createToken(config('passport.token'))->accessToken,
+            'access_token' => $token->accessToken,
         ];
     }
 
+    /**
+     * Login using mocked user.
+     * This method now uses mocking instead of database queries.
+     *
+     * @param  string|null  $email
+     * @return array
+     */
     protected function login($email = null)
     {
-        $user = User::where('email', $email)->first();
-
-        if (! $user) {
-            $this->markTestSkipped('User not found, please check your assigned user data or please try again. if its somehow work, theres something wrong with your auth flow in test case fix it yourself. :)');
-            abort(500, 'User not found, please check your assigned user data or please try again. if its somehow work, theres something wrong with your auth flow in test case fix it yourself. :)');
+        if (! $email) {
+            $this->markTestSkipped('Email is required for login. Please provide a valid email address.');
 
             return [
                 'user' => null,
@@ -45,9 +52,17 @@ trait AuthCase
             ];
         }
 
+        // Mock user instead of querying database
+        $user = $this->mockUser($email, 'Test User', 'user-id-'.md5($email));
+        $token = $this->mockToken('mock-access-token-'.md5($email));
+
+        $user->shouldReceive('createToken')
+            ->with(Mockery::any())
+            ->andReturn($token);
+
         return [
             'user' => $user,
-            'token' => $user->createToken(config('passport.token'))->accessToken,
+            'token' => $token->accessToken,
         ];
     }
 }

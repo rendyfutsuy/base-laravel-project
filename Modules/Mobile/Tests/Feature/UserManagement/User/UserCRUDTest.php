@@ -2,24 +2,59 @@
 
 namespace Modules\Mobile\Tests\Feature\UserManagement\User;
 
+use PHPUnit\Framework\Attributes\Test;
+use Mockery;
 use Carbon\Carbon;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
-use App\Models\User;
-use Modules\Hierarchy\Models\Role;
-use Tests\Feature\Components\AuthCase;
+use Tests\Feature\Components\MockAuthHelper;
+use Modules\Authentication\Http\Repositories\Contracts\UserContract;
 
 class UserCRUDTest extends TestCase
 {
-    use AuthCase;
+    use MockAuthHelper;
 
-    /** @test */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    #[Test]
     public function superadmin_can_store_new_user()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.mobile.user.store']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.mobile.user.store'), [
+        // Mock UserRepository
+        $newUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $newUserMock->id = 'user-id-789';
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('store')
+            ->once()
+            ->andReturn($newUserMock);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.user-management.mobile.user.store'), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
@@ -28,17 +63,36 @@ class UserCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_store_new_user()
     {
-        $user = User::whereHas('roles', function ($roles) {
-            $roles->where('name', 'STAFF');
-        })->first();
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'staff-user-id-456',
+            ['api.user-management.mobile.user.store']
+        );
 
-        $currentUser = $this->login($user->email);
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.mobile.user.store'), [
+        // Mock UserRepository
+        $newUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $newUserMock->id = 'user-id-789';
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('store')
+            ->once()
+            ->andReturn($newUserMock);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.user-management.mobile.user.store'), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
@@ -47,14 +101,19 @@ class UserCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_user_can_not_store_new_user()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.mobile.user.store'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.user-management.mobile.user.store'), [
             'name' => 'My Name',
             'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
@@ -63,7 +122,7 @@ class UserCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_user()
     {
         $response = $this->postJson(route('api.user-management.mobile.user.store'), [
@@ -75,19 +134,49 @@ class UserCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_update_new_user()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
-        $id = User::whereHas('roles', function ($roles) {
-            $role = Role::findByName('NORMAL_USER', 'api');
-            $roles->where('id', $role->id);
-        })->whereNotIn('id', [$currentUser['user']['id']])
-            ->orderBy('id', 'DESC')->first()->id;
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.mobile.user.update']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.mobile.user.update', $id), [
+        // Mock UserRepository
+        $existingUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $existingUserMock->id = 'user-id-999';
+        $existingUserMock->email = 'existing@mailinator.com';
+        $existingUserMock->shouldReceive('toArray')->andReturn([
+            'id' => 'user-id-999',
+            'email' => 'existing@mailinator.com',
+        ]);
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('find')
+            ->with('user-id-999')
+            ->andReturn($existingUserMock);
+
+        $userRepositoryMock->shouldReceive('validateUserRole')
+            ->with(Mockery::type(\App\Models\User::class))
+            ->andReturn(true);
+
+        $userRepositoryMock->shouldReceive('update')
+            ->once()
+            ->andReturn(true);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.user-management.mobile.user.update', 'user-id-999'), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
@@ -96,23 +185,49 @@ class UserCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_update_new_user()
     {
-        $user = User::whereHas('roles', function ($roles) {
-            $roles->where('name', 'STAFF');
-        })->first();
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'staff-user-id-456',
+            ['api.user-management.mobile.user.update']
+        );
 
-        $currentUser = $this->login($user->email);
-        $id = User::whereHas('roles', function ($roles) {
-            $role = Role::findByName('NORMAL_USER', 'api');
-            $roles->where('id', $role->id);
-        })->whereNotIn('id', [$currentUser['user']['id']])
-            ->orderBy('id', 'DESC')->first()->id;
+        // Mock UserRepository
+        $existingUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $existingUserMock->id = 'user-id-999';
+        $existingUserMock->email = 'existing@mailinator.com';
+        $existingUserMock->shouldReceive('toArray')->andReturn([
+            'id' => 'user-id-999',
+            'email' => 'existing@mailinator.com',
+        ]);
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.mobile.user.update', $id), [
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('find')
+            ->with('user-id-999')
+            ->andReturn($existingUserMock);
+
+        $userRepositoryMock->shouldReceive('validateUserRole')
+            ->with(Mockery::type(\App\Models\User::class))
+            ->andReturn(true);
+
+        $userRepositoryMock->shouldReceive('update')
+            ->once()
+            ->andReturn(true);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.user-management.mobile.user.update', 'user-id-999'), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
@@ -121,14 +236,19 @@ class UserCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_user_can_not_update_new_user()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.mobile.user.update', 1), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->putJson(route('api.user-management.mobile.user.update', 1), [
             'name' => 'My Name',
             'email' => 'my.name.'.Carbon::now()->format('hms').'@mailinator.com',
             'password' => '12345',
@@ -137,7 +257,7 @@ class UserCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_update_new_user()
     {
         $response = $this->putJson(route('api.user-management.mobile.user.update', 1), [
@@ -149,53 +269,102 @@ class UserCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_destroy_new_user()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
-        $id = User::whereHas('roles', function ($roles) {
-            $role = Role::findByName('NORMAL_USER', 'api');
-            $roles->where('id', $role->id);
-        })->whereNotIn('id', [$currentUser['user']['id']])
-            ->orderBy('id', 'DESC')->first()->id;
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.mobile.user.destroy']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.mobile.user.destroy', $id));
+        // Mock UserRepository
+        $existingUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $existingUserMock->id = 'user-id-999';
+        $existingUserMock->email = 'existing@mailinator.com';
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('find')
+            ->with('user-id-999')
+            ->andReturn($existingUserMock);
+
+        $userRepositoryMock->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->deleteJson(route('api.user-management.mobile.user.destroy', 'user-id-999'));
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_destroy_new_user()
     {
-        $currentUser = $this->login('staff@mailinator.com');
-        $id = User::whereHas('roles', function ($roles) {
-            $role = Role::findByName('NORMAL_USER', 'api');
-            $roles->where('id', $role->id);
-        })->whereNotIn('id', [$currentUser['user']['id']])
-            ->orderBy('id', 'DESC')->first()->id;
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'staff-user-id-456',
+            ['api.user-management.mobile.user.destroy']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.mobile.user.destroy', $id));
+        // Mock UserRepository
+        $existingUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $existingUserMock->id = 'user-id-999';
+        $existingUserMock->email = 'existing@mailinator.com';
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('find')
+            ->with('user-id-999')
+            ->andReturn($existingUserMock);
+
+        $userRepositoryMock->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->deleteJson(route('api.user-management.mobile.user.destroy', 'user-id-999'));
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_user_can_not_destroy_new_user()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.mobile.user.destroy', 1));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->deleteJson(route('api.user-management.mobile.user.destroy', 1));
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_destroy_new_user()
     {
         $response = $this->deleteJson(route('api.user-management.mobile.user.destroy', 1));
@@ -203,46 +372,82 @@ class UserCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.mobile.user.index']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.mobile.user.index'));
+        // Mock UserRepository
+        $userCollection = collect([
+            Mockery::mock(\App\Models\User::class)->makePartial(),
+        ]);
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('paginated')
+            ->once()
+            ->andReturn($userCollection);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.user-management.mobile.user.index'));
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_see_index()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'staff-user-id-456',
+            ['api.user-management.mobile.user.index']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.mobile.user.index'));
+        // Mock UserRepository
+        $userCollection = collect([
+            Mockery::mock(\App\Models\User::class)->makePartial(),
+        ]);
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('paginated')
+            ->once()
+            ->andReturn($userCollection);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.user-management.mobile.user.index'));
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_user_can_not_see_index()
     {
-        $user = User::whereHas('roles', function ($roles) {
-            $roles->where('name', 'NORMAL_USER');
-        })->first();
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $currentUser = $this->login($user->email);
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.mobile.user.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.user-management.mobile.user.index'));
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.user-management.mobile.user.index'));

@@ -26,9 +26,27 @@ class RoleController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @group Hierarchy
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Get paginated list of roles.
+     *
+     * @queryParam page integer Page number. Example: 1
+     * @queryParam per_page integer Items per page. Example: 10
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": "role-id-123",
+     *       "name": "ADMIN",
+     *       "guard_name": "api",
+     *       "permissions": []
+     *     }
+     *   ],
+     *   "links": {...},
+     *   "meta": {...}
+     * }
      */
     public function index()
     {
@@ -38,9 +56,20 @@ class RoleController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @group Hierarchy
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Create a new role.
+     *
+     * @bodyParam name string required The role name. Example: ADMIN
+     *
+     * @response 200 {
+     *   "id": "role-id-123",
+     *   "name": "ADMIN",
+     *   "guard_name": "api",
+     *   "permissions": []
+     * }
      */
     public function store(Request $request)
     {
@@ -56,10 +85,20 @@ class RoleController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @group Hierarchy
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Get role details by ID.
+     *
+     * @urlParam id string required The role ID. Example: role-id-123
+     *
+     * @response 200 {
+     *   "id": "role-id-123",
+     *   "name": "ADMIN",
+     *   "guard_name": "api",
+     *   "permissions": []
+     * }
      */
     public function show($id)
     {
@@ -69,9 +108,28 @@ class RoleController extends Controller
     }
 
     /**
-     * sync multiple permission to role.
+     * @group Hierarchy
      *
-     * @return \App\Http\Resources\RoleSynchResource
+     * @authenticated
+     *
+     * Sync permissions to a role.
+     *
+     * @urlParam role string required The role ID. Example: role-id-123
+     *
+     * @bodyParam permissions array required Array of permission IDs. Example: ["permission-id-1", "permission-id-2"]
+     * @bodyParam permissions.* string required Permission ID. Example: permission-id-1
+     *
+     * @response 200 {
+     *   "id": "role-id-123",
+     *   "name": "ADMIN",
+     *   "guard_name": "api",
+     *   "permissions": [
+     *     {
+     *       "id": "permission-id-1",
+     *       "name": "api.user.index"
+     *     }
+     *   ]
+     * }
      */
     public function sync(RoleSynchro $request, Role $role)
     {
@@ -85,9 +143,26 @@ class RoleController extends Controller
     }
 
     /**
-     * sync multiple permission to role.
+     * @group Hierarchy
      *
-     * @return \App\Http\Resources\RoleSynchResource
+     * @authenticated
+     *
+     * Resync a user's role.
+     *
+     * @urlParam user string required The user ID. Example: user-id-123
+     * @urlParam role string required The role ID. Example: role-id-123
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "John Doe",
+     *   "email": "user@example.com",
+     *   "roles": [
+     *     {
+     *       "id": "role-id-123",
+     *       "name": "ADMIN"
+     *     }
+     *   ]
+     * }
      */
     public function resync(User $user, Role $role)
     {

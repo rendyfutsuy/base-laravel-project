@@ -2,6 +2,7 @@
 
 namespace Modules\Location\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
@@ -19,11 +20,11 @@ class GmapTest extends TestCase
     |
     */
 
-    /** @test */
+    #[Test]
     public function gmap_key_must_set()
     {
         config('location.gmap_key', null);
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals($location['status'], 'fail');
@@ -31,12 +32,12 @@ class GmapTest extends TestCase
         config('location.gmap_key', 'itsjustwork');
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_be_use_to_get_location_base_on_coordinate()
     {
         $this->mockLocation();
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals(
@@ -45,22 +46,22 @@ class GmapTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_not_be_use_if_coordinate_not_filled()
     {
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find(null);
 
         $this->assertEquals('fail', $location['status']);
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_not_be_use_if_gmap_secret_key_is_null()
     {
         $previousKey = Config::get('app.gmap_key');
         Config::set('app.gmap_key', null);
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024,107.5215078');
 
         $this->assertEquals('fail', $location['status']);
@@ -68,12 +69,12 @@ class GmapTest extends TestCase
         Config::set('app.gmap_key', $previousKey);
     }
 
-    /** @test */
+    #[Test]
     public function if_coordinate_not_valid_gmap_will_fail()
     {
         $this->mockLocationToFail();
 
-        $gmap = new Gmap();
+        $gmap = new Gmap;
         $location = $gmap->find('-6.8998024');
 
         $this->assertEquals('fail', $location['status']);

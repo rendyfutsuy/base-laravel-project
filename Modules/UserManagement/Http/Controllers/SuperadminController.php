@@ -25,9 +25,27 @@ class SuperadminController extends Controller
     }
 
     /**
-     * Display a listing of the resource.
+     * @group User Management
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Get paginated list of superadmins.
+     *
+     * @queryParam page integer Page number. Example: 1
+     * @queryParam per_page integer Items per page. Example: 10
+     *
+     * @response 200 {
+     *   "data": [
+     *     {
+     *       "id": "user-id-123",
+     *       "name": "Super Admin",
+     *       "email": "admin@example.com",
+     *       "roles": []
+     *     }
+     *   ],
+     *   "links": {...},
+     *   "meta": {...}
+     * }
      */
     public function index()
     {
@@ -37,9 +55,22 @@ class SuperadminController extends Controller
     }
 
     /**
-     * Store a newly created resource in storage.
+     * @group User Management
      *
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Create a new superadmin.
+     *
+     * @bodyParam name string required The superadmin's full name. Example: Super Admin
+     * @bodyParam email string required The superadmin's email address. Example: admin@example.com
+     * @bodyParam password string required The superadmin's password. Example: password123
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "Super Admin",
+     *   "email": "admin@example.com",
+     *   "roles": []
+     * }
      */
     public function store(Request $request)
     {
@@ -53,10 +84,20 @@ class SuperadminController extends Controller
     }
 
     /**
-     * Display the specified resource.
+     * @group User Management
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Get superadmin details by ID.
+     *
+     * @urlParam id string required The superadmin ID. Example: user-id-123
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "Super Admin",
+     *   "email": "admin@example.com",
+     *   "roles": []
+     * }
      */
     public function show($id)
     {
@@ -66,10 +107,29 @@ class SuperadminController extends Controller
     }
 
     /**
-     * Update the specified resource in storage.
+     * @group User Management
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Update superadmin information.
+     *
+     * @urlParam id string required The superadmin ID. Example: user-id-123
+     *
+     * @bodyParam name string The superadmin's name. Example: Admin Updated
+     * @bodyParam email string The superadmin's email address. Example: admin.updated@example.com
+     * @bodyParam password string The superadmin's password. Example: newpassword123
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "Admin Updated",
+     *   "email": "admin.updated@example.com",
+     *   "roles": []
+     * }
+     * @response 400 {
+     *   "status": "failed",
+     *   "message": "Requested User have wrong Role",
+     *   "status_code": 400
+     * }
      */
     public function update(Request $request, $id)
     {
@@ -89,10 +149,17 @@ class SuperadminController extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
+     * @group User Management
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @authenticated
+     *
+     * Delete a superadmin.
+     *
+     * @urlParam id string required The superadmin ID. Example: user-id-123
+     *
+     * @response 200 {
+     *   "message": "delete admin@example.com success"
+     * }
      */
     public function destroy($id)
     {

@@ -16,7 +16,7 @@ class Sort implements FilterContract
     public function classes(): array
     {
         return [
-            new TestExample(),
+            new TestExample,
         ];
     }
 

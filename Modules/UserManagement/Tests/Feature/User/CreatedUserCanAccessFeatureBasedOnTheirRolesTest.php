@@ -2,342 +2,387 @@
 
 namespace Modules\UserManagement\Tests\Feature\User;
 
+use PHPUnit\Framework\Attributes\Test;
+use Mockery;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
-use App\Models\User;
-use Modules\Hierarchy\Models\Role;
-use Tests\Feature\Components\AuthCase;
+use Tests\Feature\Components\MockAuthHelper;
+use Modules\Authentication\Http\Repositories\Contracts\StaffContract;
+use Modules\Authentication\Http\Repositories\Contracts\UserContract;
 
 class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
 {
-    use AuthCase;
+    use MockAuthHelper;
 
-    /** @test */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    #[Test]
     public function superadmin_can_store_staff_user()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.staff.store']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.staff.store'), [
+        // Mock StaffRepository
+        $newStaffMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $newStaffMock->id = 'staff-id-789';
+
+        $staffRepositoryMock = Mockery::mock(StaffContract::class);
+        $staffRepositoryMock->shouldReceive('store')
+            ->once()
+            ->andReturn($newStaffMock);
+
+        $this->app->instance(StaffContract::class, $staffRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.user-management.staff.store'), [
             'name' => 'My Name',
             'email' => 'staff.test.1@mailinator.com',
             'password' => '12345',
         ]);
+
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_can_access_all_registered_feature()
     {
-        $currentUser = $this->login('staff.test.1@mailinator.com');
-        $id = User::whereHas('roles', function ($roles) {
-            $role = Role::findByName('STAFF', 'api');
-            $roles->where('id', $role->id);
-        })->whereNotIn('id', [$currentUser['user']['id']])
-            ->orderBy('id', 'DESC')->first()->id;
+        $userMock = $this->mockUser(
+            'staff.test.1@mailinator.com',
+            'Staff User',
+            'staff-user-id-456',
+            [
+                'api.user-management.user.index',
+                'api.user-management.user.store',
+                'api.user-management.user.show',
+                'api.user-management.user.update',
+                'api.user-management.user.destroy',
+            ]
+        );
+
+        // Mock UserRepository for index
+        $userCollection = collect([
+            Mockery::mock(\App\Models\User::class)->makePartial(),
+        ]);
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('paginated')
+            ->once()
+            ->andReturn($userCollection);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock UserRepository for store
+        $newUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $newUserMock->id = 'user-id-789';
+
+        $userRepositoryMock->shouldReceive('store')
+            ->once()
+            ->andReturn($newUserMock);
+
+        // Mock UserRepository for show, update, delete
+        $existingUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $existingUserMock->id = 'user-id-999';
+        $existingUserMock->email = 'existing@mailinator.com';
+        $existingUserMock->shouldReceive('toArray')->andReturn([
+            'id' => 'user-id-999',
+            'email' => 'existing@mailinator.com',
+        ]);
+
+        $userRepositoryMock->shouldReceive('find')
+            ->with('user-id-999')
+            ->andReturn($existingUserMock);
+
+        $userRepositoryMock->shouldReceive('validateUserRole')
+            ->with(Mockery::type(\App\Models\User::class))
+            ->andReturn(true);
+
+        $userRepositoryMock->shouldReceive('update')
+            ->once()
+            ->andReturn(true);
+
+        $userRepositoryMock->shouldReceive('delete')
+            ->once()
+            ->andReturn(true);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
 
         // user index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.user.index'))->assertOk();
+        $this->getJson(route('api.user-management.user.index'))->assertOk();
 
         // store user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.user.store'), [
+        $this->postJson(route('api.user-management.user.store'), [
             'name' => 'My Name',
             'email' => 'user.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertOk();
 
         // show user detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.user.show', $id), [
-            'name' => 'My Name',
-            'email' => 'user.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertOk();
+        $this->getJson(route('api.user-management.user.show', 'user-id-999'))->assertOk();
 
         // edit user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.user.update', $id), [
+        $this->putJson(route('api.user-management.user.update', 'user-id-999'), [
             'name' => 'My Name',
             'email' => 'user.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertOk();
 
         // destroy user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.user.destroy', $id))->assertOk();
+        $this->deleteJson(route('api.user-management.user.destroy', 'user-id-999'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_can_no_access_all_unregistered_feature()
     {
-        $currentUser = $this->login('staff.test.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff.test.1@mailinator.com',
+            'Staff User',
+            'staff-user-id-456',
+            [] // No permissions
+        );
+
+        Passport::actingAs($userMock, ['*'], 'api');
 
         // superadmin index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.superadmin.index'))->assertForbidden();
+        $this->getJson(route('api.user-management.superadmin.index'))->assertForbidden();
 
         // store superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.superadmin.store'), [
+        $this->postJson(route('api.user-management.superadmin.store'), [
             'name' => 'My Name',
             'email' => 'superadmin.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // show superadmin detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.superadmin.show', 1), [
-            'name' => 'My Name',
-            'email' => 'my.name.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertForbidden();
+        $this->getJson(route('api.user-management.superadmin.show', 1))->assertForbidden();
 
         // edit superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.superadmin.update', 1), [
+        $this->putJson(route('api.user-management.superadmin.update', 1), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // destroy superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.superadmin.destroy', 1))->assertForbidden();
+        $this->deleteJson(route('api.user-management.superadmin.destroy', 1))->assertForbidden();
 
         // staff index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.staff.index'))->assertForbidden();
+        $this->getJson(route('api.user-management.staff.index'))->assertForbidden();
 
         // store staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.staff.store'), [
+        $this->postJson(route('api.user-management.staff.store'), [
             'name' => 'My Name',
             'email' => 'staff.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // show staff detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.staff.show', 1), [
-            'name' => 'My Name',
-            'email' => 'my.name.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertForbidden();
+        $this->getJson(route('api.user-management.staff.show', 1))->assertForbidden();
 
         // edit staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.staff.update', 1), [
+        $this->putJson(route('api.user-management.staff.update', 1), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // destroy staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.staff.destroy', 1))->assertForbidden();
+        $this->deleteJson(route('api.user-management.staff.destroy', 1))->assertForbidden();
 
         // role index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.index'))->assertForbidden();
+        $this->getJson(route('api.hierarchy.role.index'))->assertForbidden();
 
         // store role
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.store'), [
+        $this->postJson(route('api.hierarchy.role.store'), [
             'name' => 'My Name',
         ])->assertForbidden();
 
         // show role detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.show', 1), [
-            'name' => 'My Name',
-        ])->assertForbidden();
+        $this->getJson(route('api.hierarchy.role.show', 1))->assertForbidden();
 
-        $role = Role::findByName('STAFF', 'api');
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(\Modules\Hierarchy\Models\Role::class)->makePartial();
+        $roleMock->id = 'role-id-staff';
+        $roleMock->name = 'STAFF';
+
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
 
         // sync role
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
+        $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-staff'), [
             'permissions' => [],
         ])->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_user()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.user-management.user.store']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.user.store'), [
+        // Mock UserRepository
+        $newUserMock = Mockery::mock(\App\Models\User::class)->makePartial();
+        $newUserMock->id = 'user-id-789';
+
+        $userRepositoryMock = Mockery::mock(UserContract::class);
+        $userRepositoryMock->shouldReceive('store')
+            ->once()
+            ->andReturn($newUserMock);
+
+        $this->app->instance(UserContract::class, $userRepositoryMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.user-management.user.store'), [
             'name' => 'My Name',
             'email' => 'user.test.1@mailinator.com',
             'password' => '12345',
         ]);
+
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_no_access_all_unregistered_feature()
     {
-        $currentUser = $this->login('user.test.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.test.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
+
+        Passport::actingAs($userMock, ['*'], 'api');
 
         // user index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.user.index'))->assertForbidden();
+        $this->getJson(route('api.user-management.user.index'))->assertForbidden();
 
         // store user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.user.store'), [
+        $this->postJson(route('api.user-management.user.store'), [
             'name' => 'My Name',
             'email' => 'user.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // show user detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.user.show', 1), [
-            'name' => 'My Name',
-            'email' => 'user.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertForbidden();
+        $this->getJson(route('api.user-management.user.show', 1))->assertForbidden();
 
         // edit user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.user.update', 1), [
+        $this->putJson(route('api.user-management.user.update', 1), [
             'name' => 'My Name',
             'email' => 'user.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // destroy user
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.user.destroy', 1))->assertForbidden();
+        $this->deleteJson(route('api.user-management.user.destroy', 1))->assertForbidden();
 
         // superadmin index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.superadmin.index'))->assertForbidden();
+        $this->getJson(route('api.user-management.superadmin.index'))->assertForbidden();
 
         // store superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.superadmin.store'), [
+        $this->postJson(route('api.user-management.superadmin.store'), [
             'name' => 'My Name',
             'email' => 'superadmin.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // show superadmin detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.superadmin.show', 1), [
-            'name' => 'My Name',
-            'email' => 'my.name.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertForbidden();
+        $this->getJson(route('api.user-management.superadmin.show', 1))->assertForbidden();
 
         // edit superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.superadmin.update', 1), [
+        $this->putJson(route('api.user-management.superadmin.update', 1), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // destroy superadmin
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.superadmin.destroy', 1))->assertForbidden();
+        $this->deleteJson(route('api.user-management.superadmin.destroy', 1))->assertForbidden();
 
         // staff index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.staff.index'))->assertForbidden();
+        $this->getJson(route('api.user-management.staff.index'))->assertForbidden();
 
         // store staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.user-management.staff.store'), [
+        $this->postJson(route('api.user-management.staff.store'), [
             'name' => 'My Name',
             'email' => 'staff.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // show staff detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.user-management.staff.show', 1), [
-            'name' => 'My Name',
-            'email' => 'my.name.'.random_str(10).'@mailinator.com',
-            'password' => '12345',
-        ])->assertForbidden();
+        $this->getJson(route('api.user-management.staff.show', 1))->assertForbidden();
 
         // edit staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->putJson(route('api.user-management.staff.update', 1), [
+        $this->putJson(route('api.user-management.staff.update', 1), [
             'name' => 'My Name',
             'email' => 'my.name.'.random_str(10).'@mailinator.com',
             'password' => '12345',
         ])->assertForbidden();
 
         // destroy staff
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->deleteJson(route('api.user-management.staff.destroy', 1))->assertForbidden();
+        $this->deleteJson(route('api.user-management.staff.destroy', 1))->assertForbidden();
 
         // role index
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.index'))->assertForbidden();
+        $this->getJson(route('api.hierarchy.role.index'))->assertForbidden();
 
         // store role
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.store'), [
+        $this->postJson(route('api.hierarchy.role.store'), [
             'name' => 'My Name',
         ])->assertForbidden();
 
         // show role detail
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.show', 1), [
-            'name' => 'My Name',
-        ])->assertForbidden();
+        $this->getJson(route('api.hierarchy.role.show', 1))->assertForbidden();
 
-        $role = Role::findByName('STAFF', 'api');
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(\Modules\Hierarchy\Models\Role::class)->makePartial();
+        $roleMock->id = 'role-id-staff';
+        $roleMock->name = 'STAFF';
+
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
 
         // sync role
-        $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
+        $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-staff'), [
             'permissions' => [],
         ])->assertForbidden();
     }

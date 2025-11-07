@@ -17,7 +17,7 @@ class NotificationSort extends Base
     public function classes(): array
     {
         return [
-            new Notification(),
+            new Notification,
         ];
     }
 }

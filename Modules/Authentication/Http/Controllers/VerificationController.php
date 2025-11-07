@@ -34,11 +34,36 @@ class VerificationController extends Controller
     }
 
     /**
-     * verify user account, with comparing verification code that user got on email.
-     * it will also revoke any verification session made before.
+     * @group Authentication
      *
-     * @param  \Illuminate\Support\Facades\Request  $resquest
-     * @return \Illuminate\Http\JsonResponse
+     * Verify OTP code sent to user's email during registration.
+     *
+     * @header Authorization Bearer {otp_token}
+     *
+     * @bodyParam code string required The OTP code received via email. Example: 123456
+     *
+     * @response 200 {
+     *   "status": "success",
+     *   "message": "Successfully Logged In",
+     *   "status_code": 200,
+     *   "data": {
+     *     "token_type": "Bearer",
+     *     "expires_in": 3600,
+     *     "access_token": "eyJ0eXAiOiJKV1QiLCJhbGc...",
+     *     "refresh_token": "refresh-token-123",
+     *     "user": {
+     *       "id": "user-id-123",
+     *       "name": "John Doe",
+     *       "email": "user@example.com",
+     *       "roles": []
+     *     }
+     *   }
+     * }
+     * @response 400 {
+     *   "status": "failed",
+     *   "message": "OTP is invalid. Please enter correct OTP",
+     *   "status_code": 400
+     * }
      */
     public function verify(Request $request)
     {
@@ -68,11 +93,20 @@ class VerificationController extends Controller
     }
 
     /**
-     * resend verification email to registered email.
-     * and renew verification session and code
+     * @group Authentication
      *
-     * @param  \Illuminate\Support\Facades\Request  $resquest
-     * @return \Illuminate\Http\JsonResponse
+     * Resend OTP code to user's email.
+     *
+     * @header Authorization Bearer {otp_token}
+     *
+     * @response 200 {
+     *   "status": "success",
+     *   "message": "Successfully Send OTP",
+     *   "status_code": 200,
+     *   "data": {
+     *     "otp_token": "new-otp-token-123"
+     *   }
+     * }
      */
     public function resendMailOTP(Request $request)
     {

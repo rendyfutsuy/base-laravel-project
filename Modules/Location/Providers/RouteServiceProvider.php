@@ -46,7 +46,7 @@ class RouteServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //register new route middleware
+        // register new route middleware
         $this->customMiddleware();
 
         $this->configureRateLimiting();

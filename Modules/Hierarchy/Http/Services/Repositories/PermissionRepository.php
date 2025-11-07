@@ -4,6 +4,7 @@ namespace Modules\Hierarchy\Http\Services\Repositories;
 
 use App\Models\User;
 use Modules\Hierarchy\Models\Role;
+use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Model;
 use Modules\Hierarchy\Models\Permission;
 use App\Http\Repositories\BaseRepository;
@@ -35,7 +36,7 @@ class PermissionRepository extends BaseRepository implements PermissionContract
             return $permission->load('roles');
         }
 
-        $roles = Role::whereIn('id', $attributes['roles'])->get();
+        $roles = $this->getRolesByIds($attributes['roles']);
         $permission->syncRoles($roles);
 
         return $permission->load('roles');
@@ -43,7 +44,7 @@ class PermissionRepository extends BaseRepository implements PermissionContract
 
     public function resync($roles, Permission $permission): Permission
     {
-        $roles = Role::whereIn('id', $roles)->get();
+        $roles = $this->getRolesByIds($roles);
         $permission->syncRoles($roles);
 
         return $permission->refresh()->load('roles');
@@ -58,5 +59,15 @@ class PermissionRepository extends BaseRepository implements PermissionContract
         ));
 
         return $permission->refresh();
+    }
+
+    public function getUsersByIds(array $userIds): Collection
+    {
+        return User::whereIn('id', $userIds)->get();
+    }
+
+    public function getRolesByIds(array $roleIds): Collection
+    {
+        return Role::whereIn('id', $roleIds)->get();
     }
 }

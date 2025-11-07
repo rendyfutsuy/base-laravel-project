@@ -9,9 +9,20 @@ use Modules\Notification\Models\FirebaseToken;
 class FirebaseTokenController extends Controller
 {
     /**
-     * Store a newly created resource in storage.
+     * @group Notifications
      *
-     * @return \Illuminate\Http\JsonResponse
+     * @authenticated
+     *
+     * Store or update Firebase token for push notifications.
+     *
+     * @bodyParam token string required The Firebase token. Example: firebase-token-123
+     *
+     * @response 201 {
+     *   "message": "Firebase token stored"
+     * }
+     * @response 400 {
+     *   "message": "Token or device type is not provided"
+     * }
      */
     public function store(Request $request)
     {
@@ -34,6 +45,22 @@ class FirebaseTokenController extends Controller
         ], 400);
     }
 
+    /**
+     * @group Notifications
+     *
+     * @authenticated
+     *
+     * Delete Firebase token.
+     *
+     * @queryParam token string required The Firebase token. Example: firebase-token-123
+     *
+     * @response 200 {
+     *   "message": "Deleted"
+     * }
+     * @response 400 {
+     *   "message": "Error message"
+     * }
+     */
     public function delete(Request $request): \Illuminate\Http\JsonResponse
     {
         try {

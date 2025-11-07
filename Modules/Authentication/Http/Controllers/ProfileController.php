@@ -18,7 +18,18 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @group Authentication
+     *
+     * @authenticated
+     *
+     * Get authenticated user's profile information.
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "John Doe",
+     *   "email": "user@example.com",
+     *   "roles": []
+     * }
      */
     public function profile()
     {
@@ -26,7 +37,20 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @group Authentication
+     *
+     * @authenticated
+     *
+     * Change authenticated user's password.
+     *
+     * @bodyParam password string required The new password. Example: newpassword123
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "John Doe",
+     *   "email": "user@example.com",
+     *   "roles": []
+     * }
      */
     public function changePassword(Request $request)
     {
@@ -38,7 +62,21 @@ class ProfileController extends Controller
     }
 
     /**
-     * @return \Illuminate\Http\Response
+     * @group Authentication
+     *
+     * @authenticated
+     *
+     * Update authenticated user's profile information.
+     *
+     * @bodyParam name string The user's name. Example: Jane Doe
+     * @bodyParam email string The user's email address. Example: jane@example.com
+     *
+     * @response 200 {
+     *   "id": "user-id-123",
+     *   "name": "Jane Doe",
+     *   "email": "jane@example.com",
+     *   "roles": []
+     * }
      */
     public function update(Request $request)
     {

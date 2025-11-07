@@ -29,9 +29,7 @@ abstract class HttpSearch extends Form
     protected $filters = [];
 
     /**
-     * Undocumented function
-     *
-     * @return void
+     * Create a new HttpSearch instance.
      */
     public function __construct(Pipeline $pipeline, Request $request, ?Laravel $laravel = null)
     {

@@ -2,58 +2,101 @@
 
 namespace Modules\Hierarchy\Tests\Feature\Roles;
 
+use Mockery;
+use PHPUnit\Framework\Attributes\Test;
+use Laravel\Passport\Passport;
 use Tests\TestCase;
-use App\Models\User;
 use Modules\Hierarchy\Models\Role;
-use Tests\Feature\Components\AuthCase;
+use Tests\Feature\Components\MockAuthHelper;
+use Modules\Hierarchy\Http\Services\Repositories\Contracts\RoleContract;
 
 class RoleCRUDTest extends TestCase
 {
-    use AuthCase;
+    use MockAuthHelper;
 
-    /** @test */
+    protected function setUp(): void
+    {
+        parent::setUp();
+    }
+
+    protected function tearDown(): void
+    {
+        Mockery::close();
+        parent::tearDown();
+    }
+
+    #[Test]
     public function superadmin_can_store_new_role()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.hierarchy.role.store']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.store'), [
+        // Mock RoleRepository
+        $roleMock = Mockery::mock(Role::class)->makePartial();
+        $roleMock->id = 'role-id-123';
+        $roleMock->name = 'EXAMPLE';
+        $roleMock->guard_name = 'api';
+
+        $roleRepositoryMock = Mockery::mock(RoleContract::class);
+        $roleRepositoryMock->shouldReceive('store')
+            ->once()
+            ->with(Mockery::type('array'))
+            ->andReturn($roleMock);
+
+        $this->app->instance(RoleContract::class, $roleRepositoryMock);
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.store'), [
             'name' => 'EXAMPLE',
         ]);
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_store_new_role()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'user-id-456',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.store'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.store'), [
             'name' => 'EXAMPLE',
         ]);
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_role_can_not_store_new_role()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.store'), [
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.store'), [
             'name' => 'EXAMPLE',
         ]);
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_role()
     {
         $response = $this->postJson(route('api.hierarchy.role.store'), [
@@ -63,44 +106,70 @@ class RoleCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
-        $role = Role::orderBy('id', 'DESC')->first();
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.hierarchy.role.index']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.index'));
+        // Mock RoleRepository
+        $roleCollection = collect([
+            Mockery::mock(Role::class)->makePartial(),
+        ]);
+
+        $roleRepositoryMock = Mockery::mock(RoleContract::class);
+        $roleRepositoryMock->shouldReceive('paginated')
+            ->once()
+            ->andReturn($roleCollection);
+
+        $this->app->instance(RoleContract::class, $roleRepositoryMock);
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.hierarchy.role.index'));
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_see_index()
     {
-        $currentUser = $this->login('staff@mailinator.com');
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'user-id-456',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.hierarchy.role.index'));
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_role_can_not_see_index()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->getJson(route('api.hierarchy.role.index'));
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->getJson(route('api.hierarchy.role.index'));
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.hierarchy.role.index'));
@@ -108,66 +177,143 @@ class RoleCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_sync_new_permission()
     {
-        $currentUser = $this->login('superadmin@mailinator.com');
-        $role = Role::where('name', 'SUPER_ADMIN')->first();
-        $permissions = $role->permissions->pluck('id')->toArray();
+        $userMock = $this->mockUser(
+            'superadmin@mailinator.com',
+            'Superadmin',
+            'user-id-123',
+            ['api.hierarchy.role.permission.sync']
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
-            'permissions' => $permissions,
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(Role::class)->makePartial();
+        $roleMock->id = 'role-id-123';
+        $roleMock->name = 'SUPER_ADMIN';
+        $roleMock->permissions = collect([]);
+
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
+
+        // Mock DB facade for validation exists check
+        $dbTableMock = Mockery::mock();
+        $dbTableMock->shouldReceive('whereIn')
+            ->with('id', Mockery::type('array'))
+            ->andReturnSelf();
+        $dbTableMock->shouldReceive('where')
+            ->andReturnSelf();
+        $dbTableMock->shouldReceive('count')
+            ->andReturn(2);
+        $dbTableMock->shouldReceive('exists')
+            ->andReturn(true);
+        $dbTableMock->shouldReceive('useWritePdo')
+            ->andReturnSelf();
+
+        $dbConnectionMock = Mockery::mock();
+        $dbConnectionMock->shouldReceive('table')
+            ->with('permissions')
+            ->andReturn($dbTableMock);
+
+        \Illuminate\Support\Facades\DB::shouldReceive('connection')
+            ->andReturn($dbConnectionMock);
+
+        // Mock DB::transaction for controller
+        \Illuminate\Support\Facades\DB::shouldReceive('transaction')
+            ->andReturnUsing(function ($callback) {
+                return $callback();
+            });
+
+        // Mock RoleRepository
+        $roleRepositoryMock = Mockery::mock(RoleContract::class);
+        $roleRepositoryMock->shouldReceive('sync')
+            ->once()
+            ->with(Mockery::type('array'), Mockery::type(Role::class))
+            ->andReturn($roleMock);
+
+        $this->app->instance(RoleContract::class, $roleRepositoryMock);
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-123'), [
+            'permissions' => ['permission-id-1', 'permission-id-2'],
         ]);
 
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_sync_new_permission()
     {
-        $user = User::whereHas('roles', function ($roles) {
-            $roles->where('name', 'STAFF');
-        })->first();
+        $userMock = $this->mockUser(
+            'staff@mailinator.com',
+            'Staff',
+            'user-id-456',
+            [] // No permissions
+        );
 
-        $currentUser = $this->login($user->email);
-        $role = Role::where('name', 'SUPER_ADMIN')->first();
-        $permissions = $role->permissions->pluck('id');
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(Role::class)->makePartial();
+        $roleMock->id = 'role-id-123';
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
-            'permissions' => $permissions,
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-123'), [
+            'permissions' => ['permission-id-1', 'permission-id-2'],
         ]);
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_permission_can_not_sync_new_permission()
     {
-        $currentUser = $this->login('user.1@mailinator.com');
-        $role = Role::where('name', 'SUPER_ADMIN')->first();
-        $permissions = $role->permissions->pluck('id');
+        $userMock = $this->mockUser(
+            'user.1@mailinator.com',
+            'User',
+            'user-id-789',
+            [] // No permissions
+        );
 
-        $response = $this->withHeaders([
-            'Authorization' => 'Bearer '.$currentUser['token'],
-        ])->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
-            'permissions' => $permissions,
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(Role::class)->makePartial();
+        $roleMock->id = 'role-id-123';
+
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
+
+        Passport::actingAs($userMock, ['*'], 'api');
+
+        $response = $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-123'), [
+            'permissions' => ['permission-id-1', 'permission-id-2'],
         ]);
 
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_sync_new_permission()
     {
-        $role = Role::where('name', 'SUPER_ADMIN')->first();
-        $permissions = $role->permissions->pluck('id');
+        // Mock Role for route model binding
+        $roleMock = Mockery::mock(Role::class)->makePartial();
+        $roleMock->id = 'role-id-123';
 
-        $response = $this->postJson(route('api.hierarchy.role.permission.sync', $role->id), [
-            'permissions' => $permissions,
+        // Mock route model binding
+        \Route::bind('role', function ($value) use ($roleMock) {
+            return $roleMock;
+        });
+
+        $response = $this->postJson(route('api.hierarchy.role.permission.sync', 'role-id-123'), [
+            'permissions' => ['permission-id-1', 'permission-id-2'],
         ]);
 
         $response->assertUnauthorized();
