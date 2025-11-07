@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import notificationService from '../../services/notification';
 
 const state = {
     notifications: [],
@@ -27,14 +27,21 @@ const mutations = {
     SET_LOADING(state, loading) {
         state.loading = loading;
     },
-    REMOVE_NOTIFICATION(state, notificationId) {
-        state.notifications = state.notifications.filter((n) => n.id !== notificationId);
-    },
     MARK_AS_READ(state, notificationId) {
-        const notification = state.notifications.find((n) => n.id === notificationId);
+        const notification = state.notifications.find(n => n.id === notificationId);
         if (notification) {
             notification.is_read = true;
             state.unreadCount = Math.max(0, state.unreadCount - 1);
+        }
+    },
+    REMOVE_NOTIFICATION(state, notificationId) {
+        const index = state.notifications.findIndex(n => n.id === notificationId);
+        if (index !== -1) {
+            const notification = state.notifications[index];
+            if (!notification.is_read) {
+                state.unreadCount = Math.max(0, state.unreadCount - 1);
+            }
+            state.notifications.splice(index, 1);
         }
     },
 };
@@ -43,40 +50,44 @@ const actions = {
     async fetchNotifications({ commit }, params = {}) {
         commit('SET_LOADING', true);
         try {
-            const response = await api.get('/api/v1/mobile/notification', { params });
-            commit('SET_NOTIFICATIONS', response.data.data || []);
-            commit('SET_UNREAD_COUNT', response.data.unread_counter || 0);
-            commit('SET_PAGINATION', {
-                current_page: response.data.meta?.current_page || 1,
-                last_page: response.data.meta?.last_page || 1,
-                per_page: response.data.meta?.per_page || 10,
-                total: response.data.meta?.total || 0,
-            });
-            return { success: true, data: response.data };
+            // Same as testing: getJson() returns { data: [...], links: {...}, meta: {...}, unread_counter: ... }
+            const response = await notificationService.getNotifications(params);
+            
+            // Laravel ResourceCollection format: { data: [...], links: {...}, meta: {...}, unread_counter: ... }
+            commit('SET_NOTIFICATIONS', response.data || []);
+            commit('SET_PAGINATION', response.meta || null);
+            commit('SET_UNREAD_COUNT', response.unread_counter || 0);
+            return { success: true, data: response };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to fetch notifications' };
+            const errorMessage = error.response?.data?.message || 
+                                error.response?.data?.error || 
+                                error.message || 
+                                'Failed to fetch notifications';
+            return { success: false, error: errorMessage };
         } finally {
             commit('SET_LOADING', false);
         }
     },
-    
+
     async markAsRead({ commit }, notificationId) {
         try {
-            await api.get('/api/v1/mobile/notification/read', { params: { id: notificationId } });
+            await notificationService.markAsRead(notificationId);
             commit('MARK_AS_READ', notificationId);
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to mark as read' };
+            const errorMessage = error.response?.data?.message || 'Failed to mark as read';
+            return { success: false, error: errorMessage };
         }
     },
-    
+
     async deleteNotification({ commit }, notificationId) {
         try {
-            await api.delete('/api/v1/mobile/notification', { params: { id: notificationId } });
+            await notificationService.deleteNotification(notificationId);
             commit('REMOVE_NOTIFICATION', notificationId);
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to delete notification' };
+            const errorMessage = error.response?.data?.message || 'Failed to delete notification';
+            return { success: false, error: errorMessage };
         }
     },
 };
@@ -88,4 +99,3 @@ export default {
     mutations,
     actions,
 };
-

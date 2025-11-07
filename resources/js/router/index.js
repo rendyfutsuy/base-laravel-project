@@ -73,17 +73,35 @@ const router = new VueRouter({
 });
 
 router.beforeEach(async (to, from, next) => {
-    const isAuthenticated = store.getters['auth/isAuthenticated'];
+    // Initialize auth if token exists but not authenticated yet
+    const token = localStorage.getItem('access_token');
+    let isAuthenticated = store.getters['auth/isAuthenticated'];
     
-    // Initialize auth if token exists
-    if (!isAuthenticated && localStorage.getItem('access_token')) {
-        store.dispatch('auth/initAuth');
-        await store.dispatch('auth/fetchProfile');
+    if (token && !isAuthenticated) {
+        // Initialize auth state
+        await store.dispatch('auth/initAuth');
+        isAuthenticated = store.getters['auth/isAuthenticated'];
+        
+        // Try to fetch profile to verify token
+        if (isAuthenticated) {
+            try {
+                await store.dispatch('auth/fetchProfile');
+                isAuthenticated = store.getters['auth/isAuthenticated'];
+            } catch (error) {
+                // Token invalid, clear it
+                console.error('Auth error:', error);
+                store.dispatch('auth/logout');
+                isAuthenticated = false;
+            }
+        }
     }
     
-    if (to.meta.requiresAuth && !store.getters['auth/isAuthenticated']) {
+    // Check authentication requirement
+    if (to.meta.requiresAuth && !isAuthenticated) {
+        // Redirect to login if not authenticated
         next({ name: 'Login' });
-    } else if ((to.name === 'Login' || to.name === 'Register') && store.getters['auth/isAuthenticated']) {
+    } else if ((to.name === 'Login' || to.name === 'Register') && isAuthenticated) {
+        // Redirect authenticated users away from login/register
         next({ name: 'Dashboard' });
     } else {
         next();

@@ -202,12 +202,14 @@ export default {
         this.fetchAllUsers();
     },
     methods: {
-        ...mapActions('permissions', ['fetchPermissions', 'createPermission', 'updatePermission', 'deletePermission', 'resyncRoles']),
+        ...mapActions('permissions', ['fetchPermissions', 'createPermission', 'updatePermission', 'deletePermission', 'syncRolesToPermission']),
         
         async fetchAllRoles() {
             try {
-                const response = await api.get('/api/hierarchy/roles', { params: { per_page: 1000 } });
-                this.allRoles = response.data.data || [];
+                const response = await api.get('/api/v1/hierarchy/roles', { params: { per_page: 1000 } });
+                const responseData = response.data;
+                // Handle different response structures
+                this.allRoles = responseData?.data || responseData || [];
             } catch (error) {
                 console.error('Failed to fetch roles:', error);
             }
@@ -293,9 +295,9 @@ export default {
             this.syncError = null;
             this.syncSuccess = null;
             
-            const result = await this.resyncRoles({
+            const result = await this.syncRolesToPermission({
                 permissionId: this.syncingPermission.id,
-                roles: this.selectedRoles,
+                roleIds: this.selectedRoles,
             });
             
             if (result.success) {
@@ -317,7 +319,7 @@ export default {
             this.syncUsersSuccess = null;
             
             try {
-                await api.post(`/api/hierarchy/permissions/resync/${this.syncingToUsersPermission.id}/to-user`, {
+                await api.post(`/api/v1/hierarchy/permissions/resync/${this.syncingToUsersPermission.id}/to-user`, {
                     users: this.selectedUsers,
                 });
                 this.syncUsersSuccess = 'Permission synced to users successfully!';

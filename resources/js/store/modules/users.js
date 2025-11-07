@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import userManagementService from '../../services/userManagement';
 
 const state = {
     users: [],
@@ -22,76 +22,60 @@ const mutations = {
     SET_LOADING(state, loading) {
         state.loading = loading;
     },
-    ADD_USER(state, user) {
-        state.users.unshift(user);
-    },
-    UPDATE_USER(state, user) {
-        const index = state.users.findIndex((u) => u.id === user.id);
-        if (index !== -1) {
-            state.users.splice(index, 1, user);
-        }
-    },
-    REMOVE_USER(state, userId) {
-        state.users = state.users.filter((u) => u.id !== userId);
-    },
 };
 
 const actions = {
     async fetchUsers({ commit }, params = {}) {
         commit('SET_LOADING', true);
         try {
-            const response = await api.get('/api/v1/user-management/users', { params });
-            commit('SET_USERS', response.data.data || []);
-            commit('SET_PAGINATION', {
-                current_page: response.data.meta?.current_page || 1,
-                last_page: response.data.meta?.last_page || 1,
-                per_page: response.data.meta?.per_page || 10,
-                total: response.data.meta?.total || 0,
-            });
-            return { success: true, data: response.data };
+            // Same as testing: getJson() returns { data: [...], links: {...}, meta: {...} }
+            const response = await userManagementService.getUsers(params);
+            
+            // Laravel ResourceCollection format: { data: [...], links: {...}, meta: {...} }
+            commit('SET_USERS', response.data || []);
+            commit('SET_PAGINATION', response.meta || null);
+            return { success: true, data: response };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to fetch users' };
+            const errorMessage = error.response?.data?.message || 
+                                error.response?.data?.error || 
+                                error.message || 
+                                'Failed to fetch users';
+            return { success: false, error: errorMessage };
         } finally {
             commit('SET_LOADING', false);
         }
     },
-    
-    async createUser({ commit }, userData) {
+
+    async createUser({ dispatch }, userData) {
         try {
-            const response = await api.post('/api/v1/user-management/users', userData);
-            commit('ADD_USER', response.data);
-            return { success: true, data: response.data };
-        } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to create user' };
-        }
-    },
-    
-    async updateUser({ commit }, { id, ...userData }) {
-        try {
-            const response = await api.put(`/api/v1/user-management/users/${id}`, userData);
-            commit('UPDATE_USER', response.data);
-            return { success: true, data: response.data };
-        } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to update user' };
-        }
-    },
-    
-    async deleteUser({ commit }, userId) {
-        try {
-            await api.delete(`/api/v1/user-management/users/${userId}`);
-            commit('REMOVE_USER', userId);
+            await userManagementService.createUser(userData);
+            await dispatch('fetchUsers');
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to delete user' };
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors || 'Failed to create user';
+            return { success: false, error: errorMessage };
         }
     },
-    
-    async fetchUser({ commit }, userId) {
+
+    async updateUser({ dispatch }, { id, ...userData }) {
         try {
-            const response = await api.get(`/api/v1/user-management/users/${userId}`);
-            return { success: true, data: response.data };
+            await userManagementService.updateUser(id, userData);
+            await dispatch('fetchUsers');
+            return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to fetch user' };
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors || 'Failed to update user';
+            return { success: false, error: errorMessage };
+        }
+    },
+
+    async deleteUser({ dispatch }, id) {
+        try {
+            await userManagementService.deleteUser(id);
+            await dispatch('fetchUsers');
+            return { success: true };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to delete user';
+            return { success: false, error: errorMessage };
         }
     },
 };
@@ -103,4 +87,3 @@ export default {
     mutations,
     actions,
 };
-

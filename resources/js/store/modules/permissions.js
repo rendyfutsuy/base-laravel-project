@@ -1,4 +1,4 @@
-import api from '../../services/api';
+import hierarchyService from '../../services/hierarchy';
 
 const state = {
     permissions: [],
@@ -22,77 +22,71 @@ const mutations = {
     SET_LOADING(state, loading) {
         state.loading = loading;
     },
-    ADD_PERMISSION(state, permission) {
-        state.permissions.unshift(permission);
-    },
-    UPDATE_PERMISSION(state, permission) {
-        const index = state.permissions.findIndex((p) => p.id === permission.id);
-        if (index !== -1) {
-            state.permissions.splice(index, 1, permission);
-        }
-    },
-    REMOVE_PERMISSION(state, permissionId) {
-        state.permissions = state.permissions.filter((p) => p.id !== permissionId);
-    },
 };
 
 const actions = {
     async fetchPermissions({ commit }, params = {}) {
         commit('SET_LOADING', true);
         try {
-            const response = await api.get('/api/hierarchy/permissions', { params });
-            commit('SET_PERMISSIONS', response.data.data || []);
-            commit('SET_PAGINATION', {
-                current_page: response.data.meta?.current_page || 1,
-                last_page: response.data.meta?.last_page || 1,
-                per_page: response.data.meta?.per_page || 10,
-                total: response.data.meta?.total || 0,
-            });
-            return { success: true, data: response.data };
+            // Same as testing: getJson() returns { data: [...], links: {...}, meta: {...} }
+            const response = await hierarchyService.getPermissions(params);
+            
+            // Laravel ResourceCollection format: { data: [...], links: {...}, meta: {...} }
+            commit('SET_PERMISSIONS', response.data || []);
+            commit('SET_PAGINATION', response.meta || null);
+            return { success: true, data: response };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to fetch permissions' };
+            const errorMessage = error.response?.data?.message || 
+                                error.response?.data?.error || 
+                                error.message || 
+                                'Failed to fetch permissions';
+            return { success: false, error: errorMessage };
         } finally {
             commit('SET_LOADING', false);
         }
     },
-    
-    async createPermission({ commit }, permissionData) {
+
+    async createPermission({ dispatch }, permissionData) {
         try {
-            const response = await api.post('/api/hierarchy/permissions', permissionData);
-            commit('ADD_PERMISSION', response.data);
-            return { success: true, data: response.data };
-        } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to create permission' };
-        }
-    },
-    
-    async updatePermission({ commit }, { id, ...permissionData }) {
-        try {
-            const response = await api.put(`/api/hierarchy/permissions/${id}`, permissionData);
-            commit('UPDATE_PERMISSION', response.data);
-            return { success: true, data: response.data };
-        } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to update permission' };
-        }
-    },
-    
-    async deletePermission({ commit }, permissionId) {
-        try {
-            await api.delete(`/api/hierarchy/permissions/${permissionId}`);
-            commit('REMOVE_PERMISSION', permissionId);
+            await hierarchyService.createPermission(permissionData);
+            await dispatch('fetchPermissions');
             return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to delete permission' };
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors || 'Failed to create permission';
+            return { success: false, error: errorMessage };
         }
     },
-    
-    async resyncRoles({ commit }, { permissionId, roles }) {
+
+    async updatePermission({ dispatch }, { id, ...permissionData }) {
         try {
-            const response = await api.post(`/api/hierarchy/permissions/resync/${permissionId}`, { roles });
-            commit('UPDATE_PERMISSION', response.data);
-            return { success: true, data: response.data };
+            await hierarchyService.updatePermission(id, permissionData);
+            await dispatch('fetchPermissions');
+            return { success: true };
         } catch (error) {
-            return { success: false, error: error.response?.data?.message || 'Failed to resync roles' };
+            const errorMessage = error.response?.data?.message || error.response?.data?.errors || 'Failed to update permission';
+            return { success: false, error: errorMessage };
+        }
+    },
+
+    async deletePermission({ dispatch }, id) {
+        try {
+            await hierarchyService.deletePermission(id);
+            await dispatch('fetchPermissions');
+            return { success: true };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to delete permission';
+            return { success: false, error: errorMessage };
+        }
+    },
+
+    async syncRolesToPermission({ dispatch }, { permissionId, roleIds }) {
+        try {
+            await hierarchyService.syncRolesToPermission(permissionId, roleIds);
+            await dispatch('fetchPermissions');
+            return { success: true };
+        } catch (error) {
+            const errorMessage = error.response?.data?.message || 'Failed to sync roles';
+            return { success: false, error: errorMessage };
         }
     },
 };
@@ -104,4 +98,3 @@ export default {
     mutations,
     actions,
 };
-

@@ -158,12 +158,14 @@ export default {
         this.fetchAllPermissions();
     },
     methods: {
-        ...mapActions('roles', ['fetchRoles', 'createRole', 'updateRole', 'deleteRole', 'syncPermissions']),
+        ...mapActions('roles', ['fetchRoles', 'createRole', 'updateRole', 'deleteRole', 'syncPermissionsToRole']),
         
         async fetchAllPermissions() {
             try {
-                const response = await api.get('/api/hierarchy/permissions', { params: { per_page: 1000 } });
-                this.allPermissions = response.data.data || [];
+                const response = await api.get('/api/v1/hierarchy/permissions', { params: { per_page: 1000 } });
+                const responseData = response.data;
+                // Handle different response structures
+                this.allPermissions = responseData?.data || responseData || [];
             } catch (error) {
                 console.error('Failed to fetch permissions:', error);
             }
@@ -228,9 +230,9 @@ export default {
             this.syncError = null;
             this.syncSuccess = null;
             
-            const result = await this.syncPermissions({
+            const result = await this.syncPermissionsToRole({
                 roleId: this.syncingRole.id,
-                permissions: this.selectedPermissions,
+                permissionIds: this.selectedPermissions,
             });
             
             if (result.success) {

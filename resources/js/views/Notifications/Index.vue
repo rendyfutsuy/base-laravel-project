@@ -36,7 +36,7 @@
                     <div class="notification-actions">
                         <button
                             v-if="!notification.is_read"
-                            @click="markAsRead(notification.id)"
+                            @click="handleMarkAsRead(notification.id)"
                             class="btn btn-sm btn-mark-read"
                         >
                             Mark as Read
@@ -98,7 +98,7 @@ export default {
             });
         },
         
-        async markAsRead(notificationId) {
+        async handleMarkAsRead(notificationId) {
             const result = await this.markAsRead(notificationId);
             if (result.success) {
                 this.fetchNotifications();
