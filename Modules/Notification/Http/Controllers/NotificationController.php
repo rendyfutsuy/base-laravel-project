@@ -25,13 +25,14 @@ class NotificationController extends Controller
 
     /**
      * @group Notifications
+     *
      * @authenticated
-     * 
+     *
      * Get paginated list of notifications for authenticated user.
-     * 
+     *
      * @queryParam row integer Items per page. Example: 10
      * @queryParam page integer Page number. Example: 1
-     * 
+     *
      * @response 200 {
      *   "data": [
      *     {
@@ -67,12 +68,13 @@ class NotificationController extends Controller
 
     /**
      * @group Notifications
+     *
      * @authenticated
-     * 
+     *
      * Mark a notification as read.
-     * 
+     *
      * @queryParam id string required The notification ID. Example: notification-id-123
-     * 
+     *
      * @response 200 {
      *   "message": "Update read sucess"
      * }
@@ -99,12 +101,13 @@ class NotificationController extends Controller
 
     /**
      * @group Notifications
+     *
      * @authenticated
-     * 
+     *
      * Delete a notification.
-     * 
+     *
      * @queryParam id string required The notification ID. Example: notification-id-123
-     * 
+     *
      * @response 200 {
      *   "message": "Notification deleted"
      * }

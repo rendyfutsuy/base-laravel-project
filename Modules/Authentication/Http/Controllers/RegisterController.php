@@ -26,14 +26,14 @@ class RegisterController extends Controller
 
     /**
      * @group Authentication
-     * 
+     *
      * Register a new user account. An OTP will be sent to the provided email.
-     * 
+     *
      * @bodyParam name string required The user's full name. Example: John Doe
      * @bodyParam email string required The user's email address. Must be unique. Example: user@example.com
      * @bodyParam password string required The user's password. Must be at least 8 characters. Example: password123
      * @bodyParam password_confirmation string required The password confirmation. Must match the password. Example: password123
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Successfully Send OTP",

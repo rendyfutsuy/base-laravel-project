@@ -10,12 +10,13 @@ class FirebaseTokenController extends Controller
 {
     /**
      * @group Notifications
+     *
      * @authenticated
-     * 
+     *
      * Store or update Firebase token for push notifications.
-     * 
+     *
      * @bodyParam token string required The Firebase token. Example: firebase-token-123
-     * 
+     *
      * @response 201 {
      *   "message": "Firebase token stored"
      * }
@@ -46,12 +47,13 @@ class FirebaseTokenController extends Controller
 
     /**
      * @group Notifications
+     *
      * @authenticated
-     * 
+     *
      * Delete Firebase token.
-     * 
+     *
      * @queryParam token string required The Firebase token. Example: firebase-token-123
-     * 
+     *
      * @response 200 {
      *   "message": "Deleted"
      * }

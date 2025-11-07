@@ -26,13 +26,14 @@ class SuperadminController extends Controller
 
     /**
      * @group User Management
+     *
      * @authenticated
-     * 
+     *
      * Get paginated list of superadmins.
-     * 
+     *
      * @queryParam page integer Page number. Example: 1
      * @queryParam per_page integer Items per page. Example: 10
-     * 
+     *
      * @response 200 {
      *   "data": [
      *     {
@@ -55,14 +56,15 @@ class SuperadminController extends Controller
 
     /**
      * @group User Management
+     *
      * @authenticated
-     * 
+     *
      * Create a new superadmin.
-     * 
+     *
      * @bodyParam name string required The superadmin's full name. Example: Super Admin
      * @bodyParam email string required The superadmin's email address. Example: admin@example.com
      * @bodyParam password string required The superadmin's password. Example: password123
-     * 
+     *
      * @response 200 {
      *   "id": "user-id-123",
      *   "name": "Super Admin",
@@ -83,12 +85,13 @@ class SuperadminController extends Controller
 
     /**
      * @group User Management
+     *
      * @authenticated
-     * 
+     *
      * Get superadmin details by ID.
-     * 
+     *
      * @urlParam id string required The superadmin ID. Example: user-id-123
-     * 
+     *
      * @response 200 {
      *   "id": "user-id-123",
      *   "name": "Super Admin",
@@ -105,15 +108,17 @@ class SuperadminController extends Controller
 
     /**
      * @group User Management
+     *
      * @authenticated
-     * 
+     *
      * Update superadmin information.
-     * 
+     *
      * @urlParam id string required The superadmin ID. Example: user-id-123
+     *
      * @bodyParam name string The superadmin's name. Example: Admin Updated
      * @bodyParam email string The superadmin's email address. Example: admin.updated@example.com
      * @bodyParam password string The superadmin's password. Example: newpassword123
-     * 
+     *
      * @response 200 {
      *   "id": "user-id-123",
      *   "name": "Admin Updated",
@@ -145,12 +150,13 @@ class SuperadminController extends Controller
 
     /**
      * @group User Management
+     *
      * @authenticated
-     * 
+     *
      * Delete a superadmin.
-     * 
+     *
      * @urlParam id string required The superadmin ID. Example: user-id-123
-     * 
+     *
      * @response 200 {
      *   "message": "delete admin@example.com success"
      * }

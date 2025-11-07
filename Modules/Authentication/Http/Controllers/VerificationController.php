@@ -35,13 +35,13 @@ class VerificationController extends Controller
 
     /**
      * @group Authentication
-     * 
+     *
      * Verify OTP code sent to user's email during registration.
-     * 
+     *
      * @header Authorization Bearer {otp_token}
-     * 
+     *
      * @bodyParam code string required The OTP code received via email. Example: 123456
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Successfully Logged In",
@@ -94,11 +94,11 @@ class VerificationController extends Controller
 
     /**
      * @group Authentication
-     * 
+     *
      * Resend OTP code to user's email.
-     * 
+     *
      * @header Authorization Bearer {otp_token}
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Successfully Send OTP",

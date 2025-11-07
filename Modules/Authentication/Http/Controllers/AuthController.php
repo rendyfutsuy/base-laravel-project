@@ -37,12 +37,12 @@ class AuthController extends Controller
 
     /**
      * @group Authentication
-     * 
+     *
      * Authenticate user and receive access token.
-     * 
+     *
      * @bodyParam email string required The user's email address. Example: user@example.com
      * @bodyParam password string required The user's password. Example: password123
-     * 
+     *
      * @response 200 {
      *   "id": "user-id-123",
      *   "name": "John Doe",
@@ -70,10 +70,11 @@ class AuthController extends Controller
 
     /**
      * @group Authentication
+     *
      * @authenticated
-     * 
+     *
      * Logout the authenticated user.
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Email Successfully Logout",
@@ -93,10 +94,11 @@ class AuthController extends Controller
 
     /**
      * @group Authentication
+     *
      * @authenticated
-     * 
+     *
      * Revoke the current access token.
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Successfully Revoked Token",
@@ -126,11 +128,11 @@ class AuthController extends Controller
 
     /**
      * @group Authentication
-     * 
+     *
      * Refresh the access token using refresh token.
-     * 
+     *
      * @header Authorization Bearer {refresh_token}
-     * 
+     *
      * @response 200 {
      *   "status": "success",
      *   "message": "Successfully Logged In",

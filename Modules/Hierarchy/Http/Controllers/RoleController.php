@@ -27,13 +27,14 @@ class RoleController extends Controller
 
     /**
      * @group Hierarchy
+     *
      * @authenticated
-     * 
+     *
      * Get paginated list of roles.
-     * 
+     *
      * @queryParam page integer Page number. Example: 1
      * @queryParam per_page integer Items per page. Example: 10
-     * 
+     *
      * @response 200 {
      *   "data": [
      *     {
@@ -56,12 +57,13 @@ class RoleController extends Controller
 
     /**
      * @group Hierarchy
+     *
      * @authenticated
-     * 
+     *
      * Create a new role.
-     * 
+     *
      * @bodyParam name string required The role name. Example: ADMIN
-     * 
+     *
      * @response 200 {
      *   "id": "role-id-123",
      *   "name": "ADMIN",
@@ -84,12 +86,13 @@ class RoleController extends Controller
 
     /**
      * @group Hierarchy
+     *
      * @authenticated
-     * 
+     *
      * Get role details by ID.
-     * 
+     *
      * @urlParam id string required The role ID. Example: role-id-123
-     * 
+     *
      * @response 200 {
      *   "id": "role-id-123",
      *   "name": "ADMIN",
@@ -106,14 +109,16 @@ class RoleController extends Controller
 
     /**
      * @group Hierarchy
+     *
      * @authenticated
-     * 
+     *
      * Sync permissions to a role.
-     * 
+     *
      * @urlParam role string required The role ID. Example: role-id-123
+     *
      * @bodyParam permissions array required Array of permission IDs. Example: ["permission-id-1", "permission-id-2"]
      * @bodyParam permissions.* string required Permission ID. Example: permission-id-1
-     * 
+     *
      * @response 200 {
      *   "id": "role-id-123",
      *   "name": "ADMIN",
@@ -139,13 +144,14 @@ class RoleController extends Controller
 
     /**
      * @group Hierarchy
+     *
      * @authenticated
-     * 
+     *
      * Resync a user's role.
-     * 
+     *
      * @urlParam user string required The user ID. Example: user-id-123
      * @urlParam role string required The role ID. Example: role-id-123
-     * 
+     *
      * @response 200 {
      *   "id": "user-id-123",
      *   "name": "John Doe",
