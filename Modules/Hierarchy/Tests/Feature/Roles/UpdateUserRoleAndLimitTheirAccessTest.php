@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Roles;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Modules\Hierarchy\Models\Role;
@@ -25,7 +26,7 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_still_can_access_all_registered_feature()
     {
         $userMock = $this->mockUser(
@@ -118,7 +119,7 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
         $this->deleteJson(route('api.user-management.user.destroy', 'user-id-999'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function super_admin_change_staff_user_roles_ad__unvalidate_d__user()
     {
         $userMock = $this->mockUser(
@@ -172,7 +173,7 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_now_can_not_access_all_staff_registered_feature()
     {
         $userMock = $this->mockUser(
@@ -280,7 +281,7 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
         ])->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function super_admin_change_back_staff_user_roles_to__staff()
     {
         $userMock = $this->mockUser(
@@ -334,7 +335,7 @@ class UpdateUserRoleAndLimitTheirAccessTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_can_access_all_registered_feature_again()
     {
         $userMock = $this->mockUser(

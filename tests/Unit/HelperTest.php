@@ -2,6 +2,7 @@
 
 namespace Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 
 class HelperTest extends TestCase
@@ -16,7 +17,7 @@ class HelperTest extends TestCase
     |
     */
 
-    /** @test */
+    #[Test]
     public function number_abbr_can_abbreviate_large_numbers_correctly()
     {
         $this->assertEquals('15', number_abbr(15));
@@ -31,7 +32,7 @@ class HelperTest extends TestCase
         $this->assertEquals('53jt', number_abbr(53003839));
     }
 
-    /** @test */
+    #[Test]
     public function price_abbr_can_abbreviate_large_numbers_on_price_correctly()
     {
         $this->assertEquals('15', price_abbr(15));
@@ -46,7 +47,7 @@ class HelperTest extends TestCase
         $this->assertEquals('53,003,839', price_abbr(53003839));
     }
 
-    /** @test */
+    #[Test]
     public function price_formatted_can_generate_number_based_on_currency_that_submitted()
     {
         $this->assertEquals('Rp.129', price_formatted(129));
@@ -60,13 +61,13 @@ class HelperTest extends TestCase
         $this->assertEquals('$ 4.000.000', price_formatted(4000000, '$ '));
     }
 
-    /** @test */
+    #[Test]
     public function mask_mail_can_hide_some_part_of_your_email()
     {
         $this->assertEquals('ren************@gma******', mask_email('rendy.anggara@gmail.com'));
     }
 
-    /** @test */
+    #[Test]
     public function word_counter_can_count_word_by_word()
     {
         $this->assertEquals(1, word_counter('rendy'));
@@ -75,7 +76,7 @@ class HelperTest extends TestCase
         $this->assertEquals(3, word_counter('rendy_anggara_ganteng'));
     }
 
-    /** @test */
+    #[Test]
     public function test_title_helpers()
     {
         $this->assertEquals('Rendy', title('rendy'));
@@ -84,7 +85,7 @@ class HelperTest extends TestCase
         $this->assertEquals('Rendyanggara', title('rendyanggara'));
     }
 
-    /** @test */
+    #[Test]
     public function test_phone_generator_helpers()
     {
         $phone = '08123456789';

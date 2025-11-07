@@ -2,6 +2,7 @@
 
 namespace Modules\Mobile\Tests\Feature\Authentication\Auth;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Modules\Authentication\Models\OTP;
 use Modules\Authentication\Tests\Feature\Helpers\AuthToken;
@@ -10,7 +11,7 @@ class VerificationOTPTest extends TestCase
 {
     use AuthToken;
 
-    /** @test */
+    #[Test]
     public function user_can_access_verification_otp_code_with_otp_token()
     {
         $authentication = $this->getRegisterOTPToken('test.user.otp.mobile@mailinator.com', 'userApp123!');
@@ -36,7 +37,7 @@ class VerificationOTPTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function verification_otp_code_fail_because_otp_code_not_registered()
     {
         $authentication = $this->getRegisterOTPToken('test.user.otp.false.mobile@mailinator.com', 'userApp123!');
@@ -51,7 +52,7 @@ class VerificationOTPTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_access_verification_otp_without_otp_token()
     {
         $response = $this->withHeaders([
@@ -63,7 +64,7 @@ class VerificationOTPTest extends TestCase
         $response->assertStatus(401);
     }
 
-    /** @test */
+    #[Test]
     public function user_can_access_resend_email_otp_for_refresh_otp_code()
     {
         $authentication = $this->getRegisterOTPToken('test.user.otp.resend.mail.mobile@mailinator.com', 'userApp123!');

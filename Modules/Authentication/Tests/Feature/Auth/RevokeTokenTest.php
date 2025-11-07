@@ -3,6 +3,7 @@
 namespace Modules\Authentication\Tests\Feature\Auth;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Passport\Passport;
@@ -23,7 +24,7 @@ class RevokeTokenTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_revoke_token_with_send_access_token()
     {
         // Mock user authentication
@@ -65,7 +66,7 @@ class RevokeTokenTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_revoke_token_without_access_token()
     {
         // No authentication - should return 401

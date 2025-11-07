@@ -2,6 +2,7 @@
 
 namespace Modules\UserManagement\Tests\Feature\Staff;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class StaffCRUDTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_staff()
     {
         $userMock = $this->mockUser(
@@ -61,7 +62,7 @@ class StaffCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_store_new_staff()
     {
         $userMock = $this->mockUser(
@@ -82,7 +83,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_staff_can_not_store_new_staff()
     {
         $userMock = $this->mockUser(
@@ -103,7 +104,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_staff()
     {
         $response = $this->postJson(route('api.user-management.staff.store'), [
@@ -115,7 +116,7 @@ class StaffCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_update_new_staff()
     {
         $userMock = $this->mockUser(
@@ -166,7 +167,7 @@ class StaffCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_update_new_staff()
     {
         $userMock = $this->mockUser(
@@ -217,7 +218,7 @@ class StaffCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_staff_can_not_update_new_staff()
     {
         $userMock = $this->mockUser(
@@ -238,7 +239,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_update_new_staff()
     {
         $response = $this->putJson(route('api.user-management.staff.update', 1), [
@@ -250,7 +251,7 @@ class StaffCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_destroy_new_staff()
     {
         $userMock = $this->mockUser(
@@ -289,7 +290,7 @@ class StaffCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_destroy_new_staff()
     {
         $userMock = $this->mockUser(
@@ -306,7 +307,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_staff_can_not_destroy_new_staff()
     {
         $userMock = $this->mockUser(
@@ -323,7 +324,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_destroy_new_staff()
     {
         $response = $this->deleteJson(route('api.user-management.staff.destroy', 1));
@@ -331,7 +332,7 @@ class StaffCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
         $userMock = $this->mockUser(
@@ -360,7 +361,7 @@ class StaffCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -377,7 +378,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_staff_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -394,7 +395,7 @@ class StaffCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.user-management.staff.index'));

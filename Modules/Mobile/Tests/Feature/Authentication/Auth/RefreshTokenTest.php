@@ -2,6 +2,7 @@
 
 namespace Modules\Mobile\Tests\Feature\Authentication\Auth;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use App\Models\User;
 use Laravel\Passport\Passport;
@@ -12,7 +13,7 @@ class RefreshTokenTest extends TestCase
 {
     use AuthToken, RefreshTokenTrait;
 
-    /** @test */
+    #[Test]
     public function user_can_get_refresh_token_with_valid_token()
     {
         $authentication = $this->getToken();
@@ -34,7 +35,7 @@ class RefreshTokenTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function user_can_get_refresh_token_with_valid_token_and_token_from_other_device_will_not_be_revoked()
     {
         $authentication = $this->getToken();
@@ -63,7 +64,7 @@ class RefreshTokenTest extends TestCase
         $this->assertEquals(true, $myDeviceOauth->revoked);
     }
 
-    /** @test */
+    #[Test]
     public function user_can_refresh_token_after_user_revoke_access_token()
     {
         $authentication = $this->getToken();
@@ -92,7 +93,7 @@ class RefreshTokenTest extends TestCase
         ]);
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_refresh_token_if_token_invalid()
     {
         $response = $this->withHeaders([

@@ -2,6 +2,7 @@
 
 namespace Modules\Notification\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Tests\TestCase;
 use App\Models\User;
@@ -23,7 +24,7 @@ class NotificationServiceTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function can_create_notification(): void
     {
         $fcmMock = Mockery::mock(FCM::class);
@@ -60,7 +61,7 @@ class NotificationServiceTest extends TestCase
         $this->assertInstanceOf(Notification::class, $result);
     }
 
-    /** @test */
+    #[Test]
     public function can_create_notification_with_error_log_type(): void
     {
         $fcmMock = Mockery::mock(FCM::class);
@@ -92,7 +93,7 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function can_create_user_created_notification(): void
     {
         $fcmMock = Mockery::mock(FCM::class);
@@ -119,7 +120,7 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function can_create_user_updated_notification(): void
     {
         $fcmMock = Mockery::mock(FCM::class);
@@ -150,7 +151,7 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function can_create_user_deleted_notification(): void
     {
         $fcmMock = Mockery::mock(FCM::class);
@@ -177,7 +178,7 @@ class NotificationServiceTest extends TestCase
         $this->assertTrue(true);
     }
 
-    /** @test */
+    #[Test]
     public function can_send_notification_with_push_notification(): void
     {
         $fcmMock = Mockery::mock(FCM::class);

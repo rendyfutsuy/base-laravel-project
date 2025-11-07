@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Roles;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -25,7 +26,7 @@ class SyncPermissionByRoleTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function permissions_in_permission_sync_is_required()
     {
         $userMock = $this->mockUser(
@@ -54,7 +55,7 @@ class SyncPermissionByRoleTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function permissions_in_permission_sync_is_must_be_array_numeric()
     {
         $userMock = $this->mockUser(
@@ -83,7 +84,7 @@ class SyncPermissionByRoleTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function role_must_be_exists()
     {
         $userMock = $this->mockUser(
@@ -107,7 +108,7 @@ class SyncPermissionByRoleTest extends TestCase
         $response->assertNotFound();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_sync_role_index_to_staff_role()
     {
         $userMock = $this->mockUser(
@@ -174,7 +175,7 @@ class SyncPermissionByRoleTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_role_now_can_access_role_index_after_edit()
     {
         // First request - with permission

@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Roles;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
 use Modules\Hierarchy\Models\Role;
@@ -24,7 +25,7 @@ class RoleCRUDTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_role()
     {
         $userMock = $this->mockUser(
@@ -57,7 +58,7 @@ class RoleCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_store_new_role()
     {
         $userMock = $this->mockUser(
@@ -76,7 +77,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_role_can_not_store_new_role()
     {
         $userMock = $this->mockUser(
@@ -95,7 +96,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_role()
     {
         $response = $this->postJson(route('api.hierarchy.role.store'), [
@@ -105,7 +106,7 @@ class RoleCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
         $userMock = $this->mockUser(
@@ -134,7 +135,7 @@ class RoleCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -151,7 +152,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_role_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -168,7 +169,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.hierarchy.role.index'));
@@ -176,7 +177,7 @@ class RoleCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_sync_new_permission()
     {
         $userMock = $this->mockUser(
@@ -243,7 +244,7 @@ class RoleCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_sync_new_permission()
     {
         $userMock = $this->mockUser(
@@ -271,7 +272,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_permission_can_not_sync_new_permission()
     {
         $userMock = $this->mockUser(
@@ -299,7 +300,7 @@ class RoleCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_sync_new_permission()
     {
         // Mock Role for route model binding

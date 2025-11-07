@@ -2,6 +2,7 @@
 
 namespace Modules\Authentication\Tests\Feature\Auth;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Modules\Authentication\Tests\Feature\Helpers\AuthToken;
 
@@ -9,13 +10,13 @@ class RegisterTokenTest extends TestCase
 {
     use AuthToken;
 
-    /** @test */
+    #[Test]
     public function user_can_register_with_otp_email_sent()
     {
         $this->getRegisterOTPToken('test.user.register@mailinator.com', 'userApp123!');
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_register_because_email_has_already_been_taken()
     {
         $response = $this->withHeaders([
@@ -30,7 +31,7 @@ class RegisterTokenTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_register_because_password_not_same_confirm_password()
     {
         $response = $this->withHeaders([
@@ -45,7 +46,7 @@ class RegisterTokenTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_register_because_email_is_required()
     {
         $response = $this->withHeaders([
@@ -59,7 +60,7 @@ class RegisterTokenTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cant_register_because_password_is_required()
     {
         $response = $this->withHeaders([
@@ -74,7 +75,7 @@ class RegisterTokenTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function register_must_use_post_method()
     {
         $response = $this->withHeaders([

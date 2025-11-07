@@ -2,6 +2,7 @@
 
 namespace Modules\Time\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Carbon\Carbon;
 use PHPUnit\Framework\TestCase;
 use Modules\Time\Http\Services\Duration;
@@ -18,7 +19,7 @@ class DurationTest extends TestCase
     |
     */
 
-    /** @test */
+    #[Test]
     public function assert_time_arrangement_fit_time_constraint()
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
@@ -29,7 +30,7 @@ class DurationTest extends TestCase
         $this->assertSame('05:30:30', $time->inTime());
     }
 
-    /** @test */
+    #[Test]
     public function assert_diff_in_seconds_equals_start_time_and_end_time_duration()
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
@@ -40,7 +41,7 @@ class DurationTest extends TestCase
         $this->assertSame(19830, $time->inSecond());
     }
 
-    /** @test */
+    #[Test]
     public function assert_diff_in_minutes_equals_start_time_and_end_time_duration()
     {
         $x = Carbon::parse('2021-09-09 10:00:00');
@@ -51,7 +52,7 @@ class DurationTest extends TestCase
         $this->assertSame(330, $time->inMinute());
     }
 
-    /** @test */
+    #[Test]
     public function assert_diff_in_hours_equals_start_time_and_end_time_duration()
     {
         $x = Carbon::parse('2021-09-09 10:00:00');

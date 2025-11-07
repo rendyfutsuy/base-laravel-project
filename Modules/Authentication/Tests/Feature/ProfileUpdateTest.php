@@ -1,8 +1,9 @@
 <?php
 
-namespace Tests\Feature\Profile;
+namespace Modules\Authentication\Tests\Feature;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Laravel\Passport\Passport;
 use Tests\Feature\Components\MockAuthHelper;
 use Tests\TestCase;
@@ -22,7 +23,7 @@ class ProfileUpdateTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_update_their_profile()
     {
         $userMock = $this->mockUser(
@@ -43,7 +44,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_update_their_password()
     {
         $userMock = $this->mockUser(
@@ -62,7 +63,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_their_profile()
     {
         $userMock = $this->mockUser('superadmin@mailinator.com', 'Superadmin', 'user-id-123');
@@ -74,7 +75,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_update_their_profile()
     {
         $userMock = $this->mockUser(
@@ -94,7 +95,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_update_their_password()
     {
         $userMock = $this->mockUser(
@@ -113,7 +114,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_see_their_profile()
     {
         $userMock = $this->mockUser('user@mailinator.com', 'User', 'user-id-456');
@@ -125,7 +126,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_update_their_profile()
     {
         $userMock = $this->mockUser(
@@ -145,7 +146,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_update_their_password()
     {
         $userMock = $this->mockUser(
@@ -164,7 +165,7 @@ class ProfileUpdateTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_see_their_profile()
     {
         $userMock = $this->mockUser('staff@mailinator.com', 'Staff', 'user-id-789');

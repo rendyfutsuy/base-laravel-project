@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Permissions;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -25,7 +26,7 @@ class PermissionCRUDTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_permission()
     {
         $userMock = $this->mockUser(
@@ -59,7 +60,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_store_new_permission()
     {
         $userMock = $this->mockUser(
@@ -79,7 +80,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_permission_can_not_store_new_permission()
     {
         $userMock = $this->mockUser(
@@ -99,7 +100,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_permission()
     {
         $response = $this->postJson(route('api.hierarchy.permission.store'), [
@@ -110,7 +111,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
         $userMock = $this->mockUser(
@@ -139,7 +140,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -156,7 +157,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_permission_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -173,7 +174,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.hierarchy.permission.index'));
@@ -181,7 +182,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_resync_permission()
     {
         $userMock = $this->mockUser(
@@ -249,7 +250,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function normal_permission_can_not_resync_permission()
     {
         $userMock = $this->mockUser(
@@ -277,7 +278,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_resync_permission()
     {
         // Mock Permission for route model binding
@@ -296,7 +297,7 @@ class PermissionCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_resync_permission()
     {
         $userMock = $this->mockUser(

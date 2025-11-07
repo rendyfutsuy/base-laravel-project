@@ -2,6 +2,7 @@
 
 namespace Modules\UserManagement\Tests\Feature\User;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -24,7 +25,7 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_staff_user()
     {
         $userMock = $this->mockUser(
@@ -62,7 +63,7 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_can_access_all_registered_feature()
     {
         $userMock = $this->mockUser(
@@ -155,7 +156,7 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
         $this->deleteJson(route('api.user-management.user.destroy', 'user-id-999'))->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_user_can_no_access_all_unregistered_feature()
     {
         $userMock = $this->mockUser(
@@ -240,7 +241,7 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
         ])->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_user()
     {
         $userMock = $this->mockUser(
@@ -278,7 +279,7 @@ class CreatedUserCanAccessFeatureBasedOnTheirRolesTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_no_access_all_unregistered_feature()
     {
         $userMock = $this->mockUser(

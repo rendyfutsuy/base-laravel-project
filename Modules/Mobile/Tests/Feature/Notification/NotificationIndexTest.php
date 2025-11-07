@@ -2,6 +2,7 @@
 
 namespace Modules\Mobile\Tests\Feature\Notification;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class NotificationIndexTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_access_notification_index(): void
     {
         $userMock = $this->mockUser('superadmin@mailinator.com', 'Superadmin', 'user-id-123');

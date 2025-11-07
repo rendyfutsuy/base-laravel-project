@@ -2,6 +2,7 @@
 
 namespace Modules\Authentication\Tests\Feature;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -23,7 +24,7 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_update_their_password()
     {
         $userMock = $this->mockUser(
@@ -42,7 +43,7 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_not_login_with_previous_password()
     {
         // Mock AuthenticationService to throw error for old password
@@ -62,7 +63,7 @@ class UpdateUserCanLoginWithNewPasswordTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_login_with_new_password()
     {
         // Mock AuthenticationService for successful login with new password

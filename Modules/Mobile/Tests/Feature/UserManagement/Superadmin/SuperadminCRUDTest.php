@@ -2,6 +2,7 @@
 
 namespace Modules\Mobile\Tests\Feature\UserManagement\Superadmin;
 
+use PHPUnit\Framework\Attributes\Test;
 use Mockery;
 use Carbon\Carbon;
 use Laravel\Passport\Passport;
@@ -24,7 +25,7 @@ class SuperadminCRUDTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_store_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -62,7 +63,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_store_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -83,7 +84,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_superadmin_can_not_store_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -104,7 +105,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_store_new_superadmin()
     {
         $response = $this->postJson(route('api.user-management.mobile.superadmin.store'), [
@@ -116,7 +117,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_update_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -167,7 +168,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_update_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -188,7 +189,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_superadmin_can_not_update_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -209,7 +210,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_update_new_superadmin()
     {
         $response = $this->putJson(route('api.user-management.mobile.superadmin.update', 1), [
@@ -221,7 +222,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_destroy_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -260,7 +261,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_destroy_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -277,7 +278,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_superadmin_can_not_destroy_new_superadmin()
     {
         $userMock = $this->mockUser(
@@ -294,7 +295,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_destroy_new_superadmin()
     {
         $response = $this->deleteJson(route('api.user-management.mobile.superadmin.destroy', 1));
@@ -302,7 +303,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertUnauthorized();
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_see_index()
     {
         $userMock = $this->mockUser(
@@ -331,7 +332,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -348,7 +349,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function normal_superadmin_can_not_see_index()
     {
         $userMock = $this->mockUser(
@@ -365,7 +366,7 @@ class SuperadminCRUDTest extends TestCase
         $response->assertForbidden();
     }
 
-    /** @test */
+    #[Test]
     public function guest_can_not_see_index()
     {
         $response = $this->getJson(route('api.user-management.mobile.superadmin.index'));

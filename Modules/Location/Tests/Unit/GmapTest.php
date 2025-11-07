@@ -2,6 +2,7 @@
 
 namespace Modules\Location\Tests\Unit;
 
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Config;
@@ -19,7 +20,7 @@ class GmapTest extends TestCase
     |
     */
 
-    /** @test */
+    #[Test]
     public function gmap_key_must_set()
     {
         config('location.gmap_key', null);
@@ -31,7 +32,7 @@ class GmapTest extends TestCase
         config('location.gmap_key', 'itsjustwork');
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_be_use_to_get_location_base_on_coordinate()
     {
         $this->mockLocation();
@@ -45,7 +46,7 @@ class GmapTest extends TestCase
         );
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_not_be_use_if_coordinate_not_filled()
     {
         $gmap = new Gmap;
@@ -54,7 +55,7 @@ class GmapTest extends TestCase
         $this->assertEquals('fail', $location['status']);
     }
 
-    /** @test */
+    #[Test]
     public function gmap_can_not_be_use_if_gmap_secret_key_is_null()
     {
         $previousKey = Config::get('app.gmap_key');
@@ -68,7 +69,7 @@ class GmapTest extends TestCase
         Config::set('app.gmap_key', $previousKey);
     }
 
-    /** @test */
+    #[Test]
     public function if_coordinate_not_valid_gmap_will_fail()
     {
         $this->mockLocationToFail();

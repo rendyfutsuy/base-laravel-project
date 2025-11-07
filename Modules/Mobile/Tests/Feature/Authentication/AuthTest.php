@@ -3,6 +3,7 @@
 namespace Modules\Mobile\Tests\Feature\Authentication;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Tests\TestCase;
 use Tests\Feature\Components\MockAuthHelper;
 use Modules\Authentication\Http\Services\AuthenticationService;
@@ -30,7 +31,7 @@ class AuthTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function user_can_login()
     {
         // Mock AuthenticationService
@@ -53,7 +54,7 @@ class AuthTest extends TestCase
         $response->assertStatus(200);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_login_with_un_validated_email()
     {
         // Mock AuthenticationService to throw error
@@ -71,7 +72,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_login_with_if_inactive()
     {
         // Mock AuthenticationService to throw error
@@ -89,7 +90,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_login_with_invalid_email()
     {
         // Mock AuthenticationService to throw error
@@ -107,7 +108,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function user_cannot_login_with_invalid_pin()
     {
         // Mock AuthenticationService to throw error
@@ -125,7 +126,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function email_required()
     {
         // Validation error - no need to mock service
@@ -135,7 +136,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function pin_required()
     {
         // Validation error - no need to mock service
@@ -145,7 +146,7 @@ class AuthTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function unauthenticated_user_cannot_login()
     {
         // Mock AuthenticationService to throw error

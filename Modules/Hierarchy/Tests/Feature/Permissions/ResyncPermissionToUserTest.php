@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Permissions;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -26,7 +27,7 @@ class ResyncPermissionToUserTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function users_is_required()
     {
         $userMock = $this->mockUser(
@@ -54,7 +55,7 @@ class ResyncPermissionToUserTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function users_is_must_be_array()
     {
         $userMock = $this->mockUser(
@@ -82,7 +83,7 @@ class ResyncPermissionToUserTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function users_is_must_be_exists()
     {
         $userMock = $this->mockUser(
@@ -134,7 +135,7 @@ class ResyncPermissionToUserTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function permission_can_sync_personally_to_users()
     {
         $userMock = $this->mockUser(
@@ -211,7 +212,7 @@ class ResyncPermissionToUserTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function trial_user_can_access_permissable_api()
     {
         $userMock = $this->mockUser(

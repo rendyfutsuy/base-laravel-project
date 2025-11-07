@@ -3,6 +3,7 @@
 namespace Modules\Hierarchy\Tests\Feature\Permissions;
 
 use Mockery;
+use PHPUnit\Framework\Attributes\Test;
 use Illuminate\Support\Facades\DB;
 use Laravel\Passport\Passport;
 use Tests\TestCase;
@@ -26,7 +27,7 @@ class ResyncPermissionToRolesTest extends TestCase
         parent::tearDown();
     }
 
-    /** @test */
+    #[Test]
     public function permissions_in_permission_sync_is_required()
     {
         $userMock = $this->mockUser(
@@ -54,7 +55,7 @@ class ResyncPermissionToRolesTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function permissions_in_permission_sync_is_must_exists()
     {
         $userMock = $this->mockUser(
@@ -82,7 +83,7 @@ class ResyncPermissionToRolesTest extends TestCase
         $response->assertStatus(400);
     }
 
-    /** @test */
+    #[Test]
     public function superadmin_can_resync_permission()
     {
         $userMock = $this->mockUser(
@@ -150,7 +151,7 @@ class ResyncPermissionToRolesTest extends TestCase
         $response->assertOk();
     }
 
-    /** @test */
+    #[Test]
     public function staff_role_now_can_access_role_index_after_edit()
     {
         // First request - with permission
