@@ -40,6 +40,7 @@ class UserRepository extends BaseRepository implements UserContract
             'name' => $attributes['name'],
             'email' => $attributes['email'],
             'password' => Hash::make($attributes['password']),
+            'is_active' => true, // always active
         ]);
 
         $role = Role::findByName($this->role, 'api');

@@ -35,7 +35,7 @@ class MailOTP extends Mailable
      */
     public function build()
     {
-        return $this->view('emails.email_verification')
+        return $this->view('mails.email_verification')
             ->subject('Verification Code OTP')
             ->with(
                 [

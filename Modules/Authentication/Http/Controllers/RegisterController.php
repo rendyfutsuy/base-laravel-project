@@ -54,7 +54,7 @@ class RegisterController extends Controller
         $inputData = [
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => $request->password,
         ];
 
         $user = $this->userRepository->store($inputData);

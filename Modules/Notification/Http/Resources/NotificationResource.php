@@ -15,14 +15,14 @@ class NotificationResource extends JsonResource
     public function toArray(Request $request): array
     {
         $reference = null;
-        
+
         // Safely access notifiable relationship
         // Handle case where notifiable_type might be a mock class from testing
         try {
             if ($this->notifiable_type && $this->notifiable_id) {
                 // Check if class exists and is not a mock class
                 // Mock classes from testing start with "Mockery_"
-                if (!str_starts_with($this->notifiable_type, 'Mockery_') && 
+                if (! str_starts_with($this->notifiable_type, 'Mockery_') &&
                     class_exists($this->notifiable_type)) {
                     // Only try to access notifiable if class is valid
                     $notifiable = $this->notifiable;
@@ -38,7 +38,7 @@ class NotificationResource extends JsonResource
             // If notifiable cannot be loaded (e.g., mock class or deleted model), set reference to null
             $reference = null;
         }
-        
+
         return [
             'id' => $this->id,
             'title' => $this->title,
